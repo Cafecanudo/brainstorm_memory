@@ -2,6 +2,15 @@
 @plugin "@tailwindcss/typography";
 
 @theme {
+  --text-2xs: 0.75rem;
+  --text-2xs--line-height: 1rem;
+  --text-xs: 0.8125rem;
+  --text-xs--line-height: 1.25rem;
+  --text-sm: 0.9375rem;
+  --text-sm--line-height: 1.4rem;
+  --text-base: 1.0625rem;
+  --text-base--line-height: 1.6rem;
+
   --color-sunken: #171513;
   --color-canvas: #1d1b19;
   --color-surface: #262321;
@@ -30,7 +39,7 @@
   }
 
   body {
-    @apply bg-canvas text-fg antialiased;
+    @apply bg-canvas text-base text-fg antialiased;
   }
 
   ::selection {

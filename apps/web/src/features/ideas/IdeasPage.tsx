@@ -1,14 +1,51 @@
-import { FolderPlus, Lightbulb, Plus, Search, SearchX, X } from 'lucide-react';
+import { Flag, FolderPlus, LayoutGrid, Lightbulb, List, Plus, Search, SearchX, X } from 'lucide-react';
 import { useEffect, useState } from 'react';
 import { useNavigate, useSearchParams } from 'react-router';
 import { useIdeas, useProjects, useTags } from '../../api/hooks';
-import type { IdeaStatus } from '../../api/types';
-import { ButtonLink, EmptyState, Kbd, PageSpinner, Spinner, cx, inputClass } from '../../components/ui';
-import { STATUS_OPTIONS } from '../../lib/constants';
+import type { IdeaPriority, IdeaStatus } from '../../api/types';
+import {
+  ButtonLink,
+  EmptyState,
+  Kbd,
+  PageSpinner,
+  SegmentedControl,
+  Spinner,
+  cx,
+  inputClass,
+  type SegmentOption,
+} from '../../components/ui';
+import { PRIORITY_OPTIONS, STATUS_OPTIONS } from '../../lib/constants';
 import { isTypingTarget, partitionFiles, usePasteFiles } from '../../lib/files';
 import { IdeaCard } from './IdeaCard';
+import { IdeaList } from './IdeaList';
+import { useViewMode, type ViewMode } from './useViewMode';
 
 const STATUS_VALUES = new Set<string>(STATUS_OPTIONS.map((option) => option.value));
+const PRIORITY_VALUES = new Set<string>(PRIORITY_OPTIONS.map((option) => option.value));
+
+const STATUS_SEGMENTS: SegmentOption<IdeaStatus>[] = [
+  { value: undefined, label: 'Todas' },
+  ...STATUS_OPTIONS.map((option) => ({ value: option.value, label: option.label })),
+];
+
+const PRIORITY_SEGMENTS: SegmentOption<IdeaPriority>[] = [
+  { value: undefined, label: 'Qualquer', title: 'Qualquer prioridade' },
+  ...PRIORITY_OPTIONS.map((option) => ({
+    value: option.value,
+    title: `Prioridade ${option.label.toLowerCase()}`,
+    label: (
+      <>
+        <Flag className={option.className} />
+        {option.label}
+      </>
+    ),
+  })),
+];
+
+const VIEW_SEGMENTS: SegmentOption<ViewMode>[] = [
+  { value: 'grid', label: <LayoutGrid />, title: 'Visualizar em cards' },
+  { value: 'list', label: <List />, title: 'Visualizar em lista' },
+];
 
 export function IdeasPage() {
   const [params, setParams] = useSearchParams();
@@ -16,13 +53,16 @@ export function IdeasPage() {
   const projectId = params.get('project') ?? undefined;
   const rawStatus = params.get('status');
   const status = rawStatus && STATUS_VALUES.has(rawStatus) ? (rawStatus as IdeaStatus) : undefined;
+  const rawPriority = params.get('priority');
+  const priority = rawPriority && PRIORITY_VALUES.has(rawPriority) ? (rawPriority as IdeaPriority) : undefined;
   const tag = params.get('tag') ?? undefined;
   const q = params.get('q') ?? undefined;
+  const [viewMode, setViewMode] = useViewMode();
 
   const projectsQuery = useProjects();
   const projects = projectsQuery.data ?? [];
   const { data: tags = [] } = useTags();
-  const ideasQuery = useIdeas({ projectId, status, tag, q });
+  const ideasQuery = useIdeas({ projectId, status, priority, tag, q });
   const project = projects.find((item) => item.id === projectId);
   const hasProjects = projects.length > 0;
   const newIdeaPath = `/ideas/new${projectId ? `?project=${projectId}` : ''}`;
@@ -72,7 +112,7 @@ export function IdeasPage() {
   if (projectsQuery.isPending) return <PageSpinner />;
 
   const ideas = ideasQuery.data ?? [];
-  const filtered = Boolean(status || tag || q);
+  const filtered = Boolean(status || priority || tag || q);
 
   return (
     <div className="mx-auto max-w-7xl px-8 py-8">
@@ -88,6 +128,12 @@ export function IdeasPage() {
             {filtered && ' com os filtros atuais'}
           </p>
         </div>
+        <SegmentedControl
+          label="Modo de visualização"
+          options={VIEW_SEGMENTS}
+          value={viewMode}
+          onChange={(value) => value && setViewMode(value)}
+        />
         <ButtonLink to={newIdeaPath} variant="primary" disabled={!hasProjects}>
           <Plus />
           Nova ideia
@@ -105,16 +151,13 @@ export function IdeasPage() {
             className={cx(inputClass, 'pl-9')}
           />
         </div>
-        <div className="flex flex-wrap gap-1 rounded-lg bg-surface p-1 ring-1 ring-inset ring-line">
-          <FilterPill active={!status} onClick={() => setParam('status', undefined)}>
-            Todas
-          </FilterPill>
-          {STATUS_OPTIONS.map((option) => (
-            <FilterPill key={option.value} active={status === option.value} onClick={() => setParam('status', option.value)}>
-              {option.label}
-            </FilterPill>
-          ))}
-        </div>
+        <SegmentedControl label="Status" options={STATUS_SEGMENTS} value={status} onChange={(value) => setParam('status', value)} />
+        <SegmentedControl
+          label="Prioridade"
+          options={PRIORITY_SEGMENTS}
+          value={priority}
+          onChange={(value) => setParam('priority', value)}
+        />
       </div>
 
       {tags.length > 0 && (
@@ -162,6 +205,8 @@ export function IdeasPage() {
               }
             />
           )
+        ) : viewMode === 'list' ? (
+          <IdeaList ideas={ideas} showProject={!projectId} />
         ) : (
           <div className="grid gap-4 sm:grid-cols-2 xl:grid-cols-3 2xl:grid-cols-4">
             {ideas.map((idea) => (
@@ -171,20 +216,5 @@ export function IdeasPage() {
         )}
       </div>
     </div>
-  );
-}
-
-function FilterPill({ active, onClick, children }: { active: boolean; onClick: () => void; children: string }) {
-  return (
-    <button
-      type="button"
-      onClick={onClick}
-      className={cx(
-        'rounded-md px-2.5 py-1 text-xs font-medium transition-colors',
-        active ? 'bg-raised-hover text-fg' : 'text-fg-muted hover:text-fg-soft',
-      )}
-    >
-      {children}
-    </button>
   );
 }

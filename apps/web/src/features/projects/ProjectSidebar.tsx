@@ -7,6 +7,7 @@ import type { Project, ProjectInput } from '../../api/types';
 import { cx } from '../../components/ui';
 import { PROJECT_COLORS } from '../../lib/constants';
 import { errorMessage } from '../../lib/format';
+import { projectIdeasPath } from '../../lib/routes';
 
 export function ProjectSidebar() {
   const { data: projects = [], isPending } = useProjects();
@@ -31,7 +32,7 @@ export function ProjectSidebar() {
           Todas as ideias
         </SidebarLink>
 
-        <p className="mt-6 mb-1.5 px-2 text-[11px] font-medium uppercase tracking-wider text-fg-subtle">Projetos</p>
+        <p className="mt-6 mb-1.5 px-2 text-2xs font-medium uppercase tracking-wider text-fg-subtle">Projetos</p>
         <div className="space-y-0.5">
           {projects.map((project) => (
             <ProjectItem key={project.id} project={project} active={project.id === activeId} />
@@ -101,7 +102,7 @@ function ProjectItem({ project, active }: { project: Project; active: boolean })
         active ? 'bg-raised text-fg' : 'text-fg-muted hover:bg-surface hover:text-fg',
       )}
     >
-      <Link to={`/?project=${project.id}`} className="flex min-w-0 flex-1 items-center gap-2.5 px-2 py-1.5 text-sm">
+      <Link to={projectIdeasPath(project.id)} className="flex min-w-0 flex-1 items-center gap-2.5 px-2 py-1.5 text-sm">
         <span className="size-2.5 shrink-0 rounded-full" style={{ backgroundColor: project.color }} />
         <span className="truncate">{project.name}</span>
         <span className="ml-auto text-xs tabular-nums text-fg-subtle group-hover:hidden">{project.openCount || ''}</span>
@@ -159,7 +160,7 @@ function NewProject({ nextColor }: { nextColor: string }) {
       onSubmit={async (input) => {
         const project = await create.mutateAsync(input);
         setOpen(false);
-        navigate(`/?project=${project.id}`);
+        navigate(projectIdeasPath(project.id));
       }}
     />
   );
@@ -217,7 +218,7 @@ function ProjectForm({ initial, pending, error, onSubmit, onCancel }: ProjectFor
         </button>
       </div>
       {message && <p className="px-1 text-xs text-rose-400">{message}</p>}
-      <p className="px-1 text-[11px] text-fg-faint">Enter salva · Esc cancela · clique na cor para trocar</p>
+      <p className="px-1 text-2xs text-fg-faint">Enter salva · Esc cancela · clique na cor para trocar</p>
     </form>
   );
 }

@@ -35,6 +35,7 @@ const updateIdeaSchema = ideaBaseSchema.partial();
 const listQuerySchema = z.object({
   projectId: z.uuid().optional(),
   status: statusSchema.optional(),
+  priority: prioritySchema.optional(),
   tag: z.string().trim().toLowerCase().min(1).optional(),
   q: z.string().trim().min(1).max(200).optional(),
 });

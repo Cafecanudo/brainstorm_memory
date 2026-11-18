@@ -75,7 +75,7 @@ export function PageSpinner() {
 export function StatusBadge({ status }: { status: IdeaStatus }) {
   const meta = STATUS_META[status];
   return (
-    <span className={cx('inline-flex items-center rounded-full px-2 py-0.5 text-[11px] font-medium ring-1 ring-inset', meta.className)}>
+    <span className={cx('inline-flex items-center rounded-full px-2 py-0.5 text-2xs font-medium ring-1 ring-inset', meta.className)}>
       {meta.label}
     </span>
   );
@@ -84,7 +84,7 @@ export function StatusBadge({ status }: { status: IdeaStatus }) {
 export function Field({ label, children }: { label: string; children: ReactNode }) {
   return (
     <div className="space-y-1.5">
-      <span className="block text-[11px] font-medium uppercase tracking-wider text-fg-subtle">{label}</span>
+      <span className="block text-2xs font-medium uppercase tracking-wider text-fg-subtle">{label}</span>
       {children}
     </div>
   );
@@ -92,7 +92,7 @@ export function Field({ label, children }: { label: string; children: ReactNode 
 
 export function Kbd({ children }: { children: ReactNode }) {
   return (
-    <kbd className="rounded border border-line-strong bg-raised px-1.5 py-px font-sans text-[10px] font-medium text-fg-muted">
+    <kbd className="rounded border border-line-strong bg-raised px-1.5 py-px font-sans text-2xs font-medium text-fg-muted">
       {children}
     </kbd>
   );
@@ -110,3 +110,41 @@ export function EmptyState({ icon, title, description }: { icon: ReactNode; titl
 
 export const inputClass =
   'w-full rounded-lg bg-surface px-3 py-2 text-sm text-fg ring-1 ring-inset ring-line outline-none transition placeholder:text-fg-faint focus:ring-accent';
+
+export interface SegmentOption<T extends string> {
+  value: T | undefined;
+  label: ReactNode;
+  title?: string;
+}
+
+export function SegmentedControl<T extends string>({
+  options,
+  value,
+  onChange,
+  label,
+}: {
+  options: SegmentOption<T>[];
+  value: T | undefined;
+  onChange: (value: T | undefined) => void;
+  label: string;
+}) {
+  return (
+    <div role="group" aria-label={label} className="flex flex-wrap gap-1 rounded-lg bg-surface p-1 ring-1 ring-inset ring-line">
+      {options.map((option) => (
+        <button
+          key={option.value ?? 'all'}
+          type="button"
+          title={option.title}
+          aria-pressed={value === option.value}
+          onClick={() => onChange(option.value)}
+          className={cx(
+            'flex items-center gap-1.5 rounded-md px-2.5 py-1 text-xs font-medium transition-colors [&_svg]:size-3.5',
+            value === option.value ? 'bg-raised-hover text-fg' : 'text-fg-muted hover:text-fg-soft',
+          )}
+        >
+          {option.label}
+        </button>
+      ))}
+    </div>
+  );
+}

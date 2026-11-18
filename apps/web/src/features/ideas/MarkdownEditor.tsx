@@ -23,19 +23,19 @@ export function MarkdownEditor({ value, onChange, defaultMode = 'write' }: Markd
         <TabButton active={mode === 'preview'} onClick={() => setMode('preview')}>
           Visualizar
         </TabButton>
-        <span className="ml-auto pr-2 text-[11px] text-fg-faint">Markdown</span>
+        <span className="ml-auto pr-2 text-2xs text-fg-faint">Markdown</span>
       </div>
       {mode === 'write' ? (
         <textarea
           value={value}
           onChange={(event) => onChange(event.target.value)}
           placeholder={'Contexto, problema, abordagem, links...\n\nCole prints aqui com Ctrl+V: eles viram anexos.'}
-          className="field-sizing-content block min-h-72 w-full resize-none bg-transparent p-4 font-mono text-[13px] leading-relaxed text-fg-soft outline-none placeholder:text-fg-faint"
+          className="field-sizing-content block min-h-72 w-full resize-none bg-transparent p-4 font-mono text-sm leading-relaxed text-fg-soft outline-none placeholder:text-fg-faint"
         />
       ) : (
         <div
           onDoubleClick={() => setMode('write')}
-          className="prose prose-sm prose-invert prose-warm min-h-72 max-w-none p-4 prose-headings:tracking-tight prose-a:text-accent-soft prose-code:before:content-none prose-code:after:content-none prose-pre:bg-sunken"
+          className="prose prose-sm text-sm prose-invert prose-warm min-h-72 max-w-none p-4 prose-headings:tracking-tight prose-a:text-accent-soft prose-code:before:content-none prose-code:after:content-none prose-pre:bg-sunken"
         >
           {value.trim() ? (
             <Markdown remarkPlugins={[remarkGfm]}>{value}</Markdown>

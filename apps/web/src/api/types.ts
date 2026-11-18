@@ -62,6 +62,7 @@ export interface IdeaInput {
 export interface IdeaFilters {
   projectId?: string;
   status?: IdeaStatus;
+  priority?: IdeaPriority;
   tag?: string;
   q?: string;
 }

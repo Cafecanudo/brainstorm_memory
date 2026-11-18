@@ -12,6 +12,7 @@ import {
 export interface IdeaFilters {
   projectId?: string;
   status?: IdeaStatus;
+  priority?: IdeaPriority;
   tag?: string;
   q?: string;
 }
@@ -36,6 +37,7 @@ export class IdeaRepository {
     const conditions: SQL[] = [];
     if (filters.projectId) conditions.push(eq(ideas.projectId, filters.projectId));
     if (filters.status) conditions.push(eq(ideas.status, filters.status));
+    if (filters.priority) conditions.push(eq(ideas.priority, filters.priority));
     if (filters.tag) conditions.push(arrayContains(ideas.tags, [filters.tag]));
     if (filters.q) {
       const pattern = `%${escapeLike(filters.q)}%`;

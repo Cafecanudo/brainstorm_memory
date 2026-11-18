@@ -5,6 +5,7 @@ import type { IdeaInput, Project } from '../../api/types';
 import { Button, Field, Kbd, Spinner, cx, inputClass } from '../../components/ui';
 import { PRIORITY_OPTIONS, STATUS_OPTIONS } from '../../lib/constants';
 import { errorMessage } from '../../lib/format';
+import { projectIdeasPath } from '../../lib/routes';
 import { MarkdownEditor } from './MarkdownEditor';
 import { TagInput } from './TagInput';
 
@@ -87,7 +88,7 @@ export function IdeaForm({
   const goBack = () => {
     const historyIndex = (window.history.state as { idx?: number } | null)?.idx ?? 0;
     if (historyIndex > 0) navigate(-1);
-    else navigate(`/?project=${baseline.projectId}`);
+    else navigate(projectIdeasPath(baseline.projectId));
   };
 
   return (

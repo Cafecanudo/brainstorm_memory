@@ -15,6 +15,7 @@ import {
 import type { IdeaDetail, IdeaInput } from '../../api/types';
 import { Button, ButtonLink, EmptyState, PageSpinner } from '../../components/ui';
 import { errorMessage, formatDateTime } from '../../lib/format';
+import { projectIdeasPath } from '../../lib/routes';
 import { AttachmentPanel, type AttachmentItem } from '../attachments/AttachmentPanel';
 import { IdeaForm } from './IdeaForm';
 
@@ -75,7 +76,7 @@ function NewIdea() {
         window.alert(`A ideia foi salva, mas o upload dos anexos falhou: ${errorMessage(error)}`);
       }
     }
-    navigate(`/ideas/${idea.id}`, { replace: true });
+    navigate(projectIdeasPath(values.projectId), { replace: true });
   };
 
   const items: AttachmentItem[] = pending.map(({ key, file }) => ({
@@ -159,7 +160,7 @@ function ExistingIdea({ id }: { id: string }) {
   const handleDelete = async () => {
     if (!window.confirm(`Excluir a ideia "${idea.title}"? Os anexos também serão apagados.`)) return;
     await remove.mutateAsync(id);
-    navigate(`/?project=${idea.projectId}`, { replace: true });
+    navigate(projectIdeasPath(idea.projectId), { replace: true });
   };
 
   const items: AttachmentItem[] = idea.attachments.map((attachment) => ({
@@ -179,11 +180,12 @@ function ExistingIdea({ id }: { id: string }) {
       projects={projectsQuery.data ?? []}
       tagSuggestions={tags}
       submitLabel="Salvar"
-      submitting={update.isPending}
+      submitting={update.isPending || upload.isPending}
       error={update.error ?? remove.error}
       previewFirst={Boolean(idea.description.trim())}
       onSubmit={async (values) => {
         await update.mutateAsync({ id, input: values });
+        navigate(projectIdeasPath(values.projectId), { replace: true });
       }}
       headerActions={
         <Button variant="danger" size="icon" title="Excluir ideia" onClick={handleDelete} disabled={remove.isPending}>
