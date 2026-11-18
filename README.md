@@ -92,7 +92,7 @@ Na tela da ideia:
 2. **Descrição**: o contexto, o problema e o que você pensou em fazer. Veja [Escrever a descrição](#escrever-a-descrição).
 3. **Projeto, status e prioridade**: ficam na coluna da direita. Uma ideia nova começa em *Backlog* com prioridade *Média*.
 4. **Tags**: digite e pressione **Enter**, **vírgula** ou **espaço** para adicionar. **Backspace** no campo vazio remove a última. As tags que você já usou aparecem como sugestão.
-5. Clique em **Criar ideia** ou pressione **Ctrl+S**.
+5. Clique em **Criar ideia** ou pressione **Ctrl+S**. A ideia é salva e você volta para a lista do projeto, pronto para registrar a próxima.
 
 Os prints colados antes de salvar aparecem em *Anexos* com o aviso "Enviados ao criar a ideia". O nome do arquivo é gerado com a data e a hora, por exemplo `print-20261118-125635.png`.
 
@@ -165,14 +165,15 @@ Clique num projeto na barra lateral para ver só as ideias dele. **Todas as idei
 
 ![Lista filtrada por um projeto](docs/images/08-projeto.png)
 
-### Por status e tag
+### Por status, prioridade e tag
 
 - Os botões **Todas, Backlog, Em andamento, Feito e Descartado** filtram por status.
+- Os botões **Qualquer, Alta, Média e Baixa** filtram por prioridade.
 - As tags abaixo da busca filtram por tag. Clique de novo na tag, ou no **×**, para tirar o filtro.
 
-Os filtros se combinam entre si e com o projeto. O topo da lista mostra quantas ideias atendem aos filtros atuais.
+Os filtros se combinam entre si e com o projeto. O topo da lista mostra quantas ideias atendem aos filtros atuais. No exemplo abaixo, só as ideias em *Backlog* com prioridade *Alta*:
 
-![Filtro por status Backlog e pela tag dsp](docs/images/09-filtros.png)
+![Filtro por status Backlog e prioridade Alta](docs/images/09-filtros.png)
 
 ### Pela busca
 
@@ -182,11 +183,22 @@ O campo **Buscar** procura no título e na descrição enquanto você digita. N�
 
 > Os filtros ficam no endereço da página. Dá para salvar uma busca nos favoritos do navegador ou voltar para ela com o botão *Voltar*.
 
+### Cards ou lista
+
+Os dois botões ao lado de **Nova ideia** trocam a forma de exibir as ideias:
+
+- **Cards**: mostra o primeiro print em destaque. Bom para reconhecer as ideias pelo visual.
+- **Lista**: uma ideia por linha, com miniatura, resumo, tags, status, prioridade, anexos e data. Bom para revisar muitas ideias de uma vez.
+
+A ferramenta lembra a última escolha neste navegador. Os filtros funcionam igual nos dois modos.
+
+![Ideias exibidas em modo lista](docs/images/11-modo-lista.png)
+
 ---
 
 ## Editar, concluir e excluir
 
-- **Editar**: abra a ideia, altere o que quiser e clique em **Salvar** ou pressione **Ctrl+S**. Enquanto houver algo não salvo, aparece o aviso *Alterações não salvas*, e o navegador pede confirmação se você tentar fechar a aba.
+- **Editar**: abra a ideia, altere o que quiser e clique em **Salvar** ou pressione **Ctrl+S**. A ideia é salva e fechada, e você volta para a lista do projeto dela. Enquanto houver algo não salvo, aparece o aviso *Alterações não salvas*, e o navegador pede confirmação se você tentar fechar a aba. Para sair sem salvar, use **Voltar**.
 - **Concluir**: mude o status para **Feito**. Se desistir da ideia, use **Descartado** em vez de excluir: ela some das contagens em aberto, mas continua registrada.
 - **Mudar de projeto**: troque o campo *Projeto* na coluna da direita e salve.
 - **Excluir**: clique na **lixeira**, ao lado do botão *Salvar*. A exclusão apaga a ideia e todos os anexos dela, e não pode ser desfeita.
@@ -202,7 +214,7 @@ A coluna da direita mostra quando a ideia foi criada e quando foi atualizada pel
 | **N** | Lista de ideias | Abre uma ideia nova |
 | **Ctrl+V** | Lista de ideias | Abre uma ideia nova com o print colado |
 | **Ctrl+V** | Dentro de uma ideia | Anexa o print colado |
-| **Ctrl+S** | Dentro de uma ideia | Salva |
+| **Ctrl+S** | Dentro de uma ideia | Salva e volta para a lista do projeto |
 | **Enter** | Campo de tags | Adiciona a tag |
 | **← / →** | Visualizador | Anexo anterior / próximo |
 | **Esc** | Visualizador ou formulário de projeto | Fecha / cancela |
