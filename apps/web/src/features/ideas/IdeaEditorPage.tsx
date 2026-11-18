@@ -191,14 +191,14 @@ function ExistingIdea({ id }: { id: string }) {
         </Button>
       }
       meta={
-        <dl className="space-y-1 border-t border-zinc-800/80 pt-4 text-xs text-zinc-500">
+        <dl className="space-y-1 border-t border-line pt-4 text-xs text-fg-subtle">
           <div className="flex justify-between gap-2">
             <dt>Criada</dt>
-            <dd className="text-zinc-400">{formatDateTime(idea.createdAt)}</dd>
+            <dd className="text-fg-muted">{formatDateTime(idea.createdAt)}</dd>
           </div>
           <div className="flex justify-between gap-2">
             <dt>Atualizada</dt>
-            <dd className="text-zinc-400">{formatDateTime(idea.updatedAt)}</dd>
+            <dd className="text-fg-muted">{formatDateTime(idea.updatedAt)}</dd>
           </div>
         </dl>
       }

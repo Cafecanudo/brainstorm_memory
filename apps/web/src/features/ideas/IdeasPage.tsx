@@ -81,9 +81,9 @@ export function IdeasPage() {
           <div className="flex items-center gap-2.5">
             {project && <span className="size-3 shrink-0 rounded-full" style={{ backgroundColor: project.color }} />}
             <h1 className="truncate text-2xl font-semibold tracking-tight">{project?.name ?? 'Todas as ideias'}</h1>
-            {ideasQuery.isFetching && <Spinner className="size-4 text-zinc-600" />}
+            {ideasQuery.isFetching && <Spinner className="size-4 text-fg-faint" />}
           </div>
-          <p className="mt-1 text-sm text-zinc-500">
+          <p className="mt-1 text-sm text-fg-subtle">
             {ideas.length} {ideas.length === 1 ? 'ideia' : 'ideias'}
             {filtered && ' com os filtros atuais'}
           </p>
@@ -97,7 +97,7 @@ export function IdeasPage() {
 
       <div className="mt-6 flex flex-wrap items-center gap-3">
         <div className="relative w-full max-w-xs">
-          <Search className="pointer-events-none absolute top-1/2 left-3 size-4 -translate-y-1/2 text-zinc-500" />
+          <Search className="pointer-events-none absolute top-1/2 left-3 size-4 -translate-y-1/2 text-fg-subtle" />
           <input
             value={search}
             onChange={(event) => setSearch(event.target.value)}
@@ -105,7 +105,7 @@ export function IdeasPage() {
             className={cx(inputClass, 'pl-9')}
           />
         </div>
-        <div className="flex flex-wrap gap-1 rounded-lg bg-zinc-900/60 p-1 ring-1 ring-inset ring-zinc-800">
+        <div className="flex flex-wrap gap-1 rounded-lg bg-surface p-1 ring-1 ring-inset ring-line">
           <FilterPill active={!status} onClick={() => setParam('status', undefined)}>
             Todas
           </FilterPill>
@@ -127,8 +127,8 @@ export function IdeasPage() {
               className={cx(
                 'flex items-center gap-1 rounded-full px-2.5 py-0.5 text-xs transition-colors',
                 item === tag
-                  ? 'bg-indigo-500/20 text-indigo-200 ring-1 ring-inset ring-indigo-400/40'
-                  : 'bg-zinc-900 text-zinc-400 ring-1 ring-inset ring-zinc-800 hover:text-zinc-200',
+                  ? 'bg-accent/20 text-accent-soft ring-1 ring-inset ring-accent/40'
+                  : 'bg-surface text-fg-muted ring-1 ring-inset ring-line hover:text-fg-soft',
               )}
             >
               #{item}
@@ -181,7 +181,7 @@ function FilterPill({ active, onClick, children }: { active: boolean; onClick: (
       onClick={onClick}
       className={cx(
         'rounded-md px-2.5 py-1 text-xs font-medium transition-colors',
-        active ? 'bg-zinc-700/80 text-zinc-50' : 'text-zinc-400 hover:text-zinc-200',
+        active ? 'bg-raised-hover text-fg' : 'text-fg-muted hover:text-fg-soft',
       )}
     >
       {children}

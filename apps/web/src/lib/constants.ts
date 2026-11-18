@@ -7,7 +7,7 @@ export interface StatusMeta {
 }
 
 export const STATUS_OPTIONS: StatusMeta[] = [
-  { value: 'backlog', label: 'Backlog', className: 'bg-zinc-500/10 text-zinc-300 ring-zinc-500/30' },
+  { value: 'backlog', label: 'Backlog', className: 'bg-fg-subtle/10 text-fg-soft ring-fg-subtle/30' },
   { value: 'in_progress', label: 'Em andamento', className: 'bg-amber-500/10 text-amber-300 ring-amber-500/30' },
   { value: 'done', label: 'Feito', className: 'bg-emerald-500/10 text-emerald-300 ring-emerald-500/30' },
   { value: 'discarded', label: 'Descartado', className: 'bg-rose-500/10 text-rose-300 ring-rose-500/30' },
@@ -27,7 +27,7 @@ export interface PriorityMeta {
 export const PRIORITY_OPTIONS: PriorityMeta[] = [
   { value: 'high', label: 'Alta', className: 'text-rose-400' },
   { value: 'medium', label: 'Média', className: 'text-sky-400' },
-  { value: 'low', label: 'Baixa', className: 'text-zinc-500' },
+  { value: 'low', label: 'Baixa', className: 'text-fg-subtle' },
 ];
 
 export const PRIORITY_META = Object.fromEntries(PRIORITY_OPTIONS.map((option) => [option.value, option])) as Record<

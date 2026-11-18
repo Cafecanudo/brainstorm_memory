@@ -30,7 +30,7 @@ export function RouteError() {
       <div className="max-w-md text-center">
         <TriangleAlert className="mx-auto mb-4 size-8 text-amber-400" />
         <h1 className="text-lg font-semibold">Algo deu errado</h1>
-        <p className="mt-2 text-sm text-zinc-400">{errorMessage(error)}</p>
+        <p className="mt-2 text-sm text-fg-muted">{errorMessage(error)}</p>
         <ButtonLink to="/" className="mt-6">
           Voltar ao início
         </ButtonLink>

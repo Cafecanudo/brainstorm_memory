@@ -20,15 +20,15 @@ export function TagInput({ value, onChange, suggestions }: TagInputProps) {
   };
 
   return (
-    <div className="flex flex-wrap gap-1.5 rounded-lg bg-zinc-900 p-2 ring-1 ring-inset ring-zinc-800 transition focus-within:ring-indigo-500">
+    <div className="flex flex-wrap gap-1.5 rounded-lg bg-surface p-2 ring-1 ring-inset ring-line transition focus-within:ring-accent">
       {value.map((tag) => (
-        <span key={tag} className="flex items-center gap-1 rounded bg-zinc-800 py-0.5 pr-1 pl-1.5 text-xs text-zinc-300">
+        <span key={tag} className="flex items-center gap-1 rounded bg-raised py-0.5 pr-1 pl-1.5 text-xs text-fg-soft">
           #{tag}
           <button
             type="button"
             title={`Remover ${tag}`}
             onClick={() => onChange(value.filter((item) => item !== tag))}
-            className="text-zinc-500 hover:text-zinc-200"
+            className="text-fg-subtle hover:text-fg-soft"
           >
             <X className="size-3" />
           </button>
@@ -52,7 +52,7 @@ export function TagInput({ value, onChange, suggestions }: TagInputProps) {
         }}
         onBlur={() => draft && add(draft)}
         placeholder={value.length ? '' : 'Adicionar tag'}
-        className="min-w-20 flex-1 bg-transparent px-1 text-sm outline-none placeholder:text-zinc-600"
+        className="min-w-20 flex-1 bg-transparent px-1 text-sm outline-none placeholder:text-fg-faint"
       />
       <datalist id={listId}>
         {suggestions

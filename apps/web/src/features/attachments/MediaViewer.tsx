@@ -31,20 +31,20 @@ export function MediaViewer({ items, index, onIndexChange, onClose }: MediaViewe
 
   return createPortal(
     <div className="fixed inset-0 z-50 flex flex-col bg-black/90 backdrop-blur-sm" onClick={onClose}>
-      <header className="flex items-center gap-3 px-5 py-3 text-sm text-zinc-300" onClick={(event) => event.stopPropagation()}>
+      <header className="flex items-center gap-3 px-5 py-3 text-sm text-fg-soft" onClick={(event) => event.stopPropagation()}>
         <span className="truncate">{item.name}</span>
         {count > 1 && (
-          <span className="shrink-0 text-zinc-500 tabular-nums">
+          <span className="shrink-0 text-fg-subtle tabular-nums">
             {index + 1} / {count}
           </span>
         )}
         <div className="ml-auto flex items-center gap-1">
           {item.downloadUrl && (
-            <a href={item.downloadUrl} title="Baixar" className="rounded-md p-2 text-zinc-400 hover:bg-white/10 hover:text-white">
+            <a href={item.downloadUrl} title="Baixar" className="rounded-md p-2 text-fg-muted hover:bg-white/10 hover:text-white">
               <Download className="size-4" />
             </a>
           )}
-          <button type="button" title="Fechar (Esc)" onClick={onClose} className="rounded-md p-2 text-zinc-400 hover:bg-white/10 hover:text-white">
+          <button type="button" title="Fechar (Esc)" onClick={onClose} className="rounded-md p-2 text-fg-muted hover:bg-white/10 hover:text-white">
             <X className="size-4" />
           </button>
         </div>
@@ -88,7 +88,7 @@ function NavButton({ side, onClick }: { side: 'left' | 'right'; onClick: () => v
         event.stopPropagation();
         onClick();
       }}
-      className={`absolute top-1/2 ${side === 'left' ? 'left-4' : 'right-4'} -translate-y-1/2 rounded-full bg-white/5 p-2.5 text-zinc-300 hover:bg-white/15 hover:text-white`}
+      className={`absolute top-1/2 ${side === 'left' ? 'left-4' : 'right-4'} -translate-y-1/2 rounded-full bg-white/5 p-2.5 text-fg-soft hover:bg-white/15 hover:text-white`}
     >
       <Icon className="size-5" />
     </button>

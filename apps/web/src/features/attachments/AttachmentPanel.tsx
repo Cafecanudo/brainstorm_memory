@@ -43,10 +43,10 @@ export function AttachmentPanel({ items, onFiles, onRemove, progress, error, not
 
   return (
     <section>
-      <h2 className="mb-3 flex items-baseline gap-2 text-sm font-medium text-zinc-300">
+      <h2 className="mb-3 flex items-baseline gap-2 text-sm font-medium text-fg-soft">
         Anexos
-        {items.length > 0 && <span className="text-xs font-normal text-zinc-600">{items.length}</span>}
-        {note && <span className="ml-auto text-xs font-normal text-zinc-500">{note}</span>}
+        {items.length > 0 && <span className="text-xs font-normal text-fg-faint">{items.length}</span>}
+        {note && <span className="ml-auto text-xs font-normal text-fg-subtle">{note}</span>}
       </h2>
 
       <div
@@ -67,15 +67,15 @@ export function AttachmentPanel({ items, onFiles, onRemove, progress, error, not
           accept(Array.from(event.dataTransfer.files));
         }}
         className={cx(
-          'flex cursor-pointer flex-col items-center justify-center gap-1.5 rounded-xl border border-dashed px-4 py-6 text-center transition-colors outline-none focus-visible:border-indigo-400',
-          dragging ? 'border-indigo-400 bg-indigo-500/5' : 'border-zinc-800 hover:border-zinc-700 hover:bg-zinc-900/40',
+          'flex cursor-pointer flex-col items-center justify-center gap-1.5 rounded-xl border border-dashed px-4 py-6 text-center transition-colors outline-none focus-visible:border-accent',
+          dragging ? 'border-accent bg-accent/5' : 'border-line hover:border-line-strong hover:bg-surface',
         )}
       >
-        <Upload className="size-5 text-zinc-500" />
-        <p className="text-sm text-zinc-300">
+        <Upload className="size-5 text-fg-subtle" />
+        <p className="text-sm text-fg-soft">
           Cole um print com <Kbd>Ctrl V</Kbd>, arraste arquivos ou clique para escolher
         </p>
-        <p className="text-xs text-zinc-600">PNG · JPG · GIF · WEBP · WEBM · MP4</p>
+        <p className="text-xs text-fg-faint">PNG · JPG · GIF · WEBP · WEBM · MP4</p>
       </div>
       <input
         ref={inputRef}
@@ -90,9 +90,9 @@ export function AttachmentPanel({ items, onFiles, onRemove, progress, error, not
       />
 
       {uploading && (
-        <div className="mt-3 flex items-center gap-3 text-xs text-zinc-400">
-          <div className="h-1.5 flex-1 overflow-hidden rounded-full bg-zinc-800">
-            <div className="h-full rounded-full bg-indigo-500 transition-[width]" style={{ width: `${Math.round(progress * 100)}%` }} />
+        <div className="mt-3 flex items-center gap-3 text-xs text-fg-muted">
+          <div className="h-1.5 flex-1 overflow-hidden rounded-full bg-raised">
+            <div className="h-full rounded-full bg-accent transition-[width]" style={{ width: `${Math.round(progress * 100)}%` }} />
           </div>
           <span className="w-24 text-right tabular-nums">
             {progress < 1 ? `Enviando ${Math.round(progress * 100)}%` : 'Processando...'}
@@ -126,8 +126,8 @@ function AttachmentTile({ item, onOpen, onRemove }: { item: AttachmentItem; onOp
   const KindIcon = item.kind === 'image' ? ImageIcon : Film;
 
   return (
-    <li className="group relative overflow-hidden rounded-lg border border-zinc-800/80 bg-zinc-950">
-      <button type="button" onClick={onOpen} className="block aspect-video w-full bg-zinc-900">
+    <li className="group relative overflow-hidden rounded-lg border border-line bg-sunken">
+      <button type="button" onClick={onOpen} className="block aspect-video w-full bg-surface">
         {src &&
           (item.kind === 'image' ? (
             <img src={src} alt={item.name} loading="lazy" className="size-full object-cover" />
@@ -143,17 +143,17 @@ function AttachmentTile({ item, onOpen, onRemove }: { item: AttachmentItem; onOp
           ))}
       </button>
       <div className="flex items-center gap-2 px-2.5 py-1.5 text-xs">
-        <KindIcon className="size-3.5 shrink-0 text-zinc-500" />
-        <span className="truncate text-zinc-400" title={item.name}>
+        <KindIcon className="size-3.5 shrink-0 text-fg-subtle" />
+        <span className="truncate text-fg-muted" title={item.name}>
           {item.name}
         </span>
-        <span className="ml-auto shrink-0 text-zinc-600">{formatBytes(item.sizeBytes)}</span>
+        <span className="ml-auto shrink-0 text-fg-faint">{formatBytes(item.sizeBytes)}</span>
       </div>
       <button
         type="button"
         title="Remover"
         onClick={onRemove}
-        className="absolute top-1.5 right-1.5 rounded-md bg-black/60 p-1.5 text-zinc-300 opacity-0 backdrop-blur transition group-hover:opacity-100 hover:text-rose-400"
+        className="absolute top-1.5 right-1.5 rounded-md bg-black/60 p-1.5 text-fg-soft opacity-0 backdrop-blur transition group-hover:opacity-100 hover:text-rose-400"
       >
         <Trash2 className="size-3.5" />
       </button>

@@ -130,7 +130,7 @@ export function IdeaForm({
             onChange={(event) => set('title', event.target.value.replace(/\n/g, ' '))}
             onKeyDown={(event) => event.key === 'Enter' && event.preventDefault()}
             placeholder="Título da ideia"
-            className="field-sizing-content block w-full resize-none bg-transparent text-3xl leading-tight font-semibold tracking-tight text-zinc-50 outline-none placeholder:text-zinc-700"
+            className="field-sizing-content block w-full resize-none bg-transparent text-3xl leading-tight font-semibold tracking-tight text-fg outline-none placeholder:text-fg-ghost"
           />
           <MarkdownEditor
             value={values.description}
@@ -166,7 +166,7 @@ export function IdeaForm({
                     'rounded-lg px-2 py-1.5 text-xs font-medium ring-1 ring-inset transition',
                     values.status === option.value
                       ? option.className
-                      : 'text-zinc-500 ring-zinc-800 hover:text-zinc-300 hover:ring-zinc-700',
+                      : 'text-fg-subtle ring-line hover:text-fg-soft hover:ring-line-strong',
                   )}
                 >
                   {option.label}
@@ -185,8 +185,8 @@ export function IdeaForm({
                   className={cx(
                     'flex items-center justify-center gap-1 rounded-lg px-2 py-1.5 text-xs font-medium ring-1 ring-inset transition',
                     values.priority === option.value
-                      ? cx('bg-zinc-800 ring-zinc-600', option.className)
-                      : 'text-zinc-500 ring-zinc-800 hover:text-zinc-300 hover:ring-zinc-700',
+                      ? cx('bg-raised ring-fg-faint', option.className)
+                      : 'text-fg-subtle ring-line hover:text-fg-soft hover:ring-line-strong',
                   )}
                 >
                   <Flag className="size-3" />

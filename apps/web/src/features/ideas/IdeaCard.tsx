@@ -13,10 +13,10 @@ export function IdeaCard({ idea, showProject }: { idea: IdeaSummary; showProject
   return (
     <Link
       to={`/ideas/${idea.id}`}
-      className="group flex flex-col overflow-hidden rounded-xl border border-zinc-800/80 bg-zinc-900/50 transition hover:border-zinc-700 hover:bg-zinc-900"
+      className="group flex flex-col overflow-hidden rounded-xl border border-line bg-surface transition hover:border-line-strong hover:bg-raised"
     >
       {idea.coverAttachmentId && (
-        <div className="aspect-video overflow-hidden border-b border-zinc-800/80 bg-zinc-950">
+        <div className="aspect-video overflow-hidden border-b border-line bg-sunken">
           <img
             src={api.attachments.contentUrl(idea.coverAttachmentId)}
             alt=""
@@ -27,24 +27,24 @@ export function IdeaCard({ idea, showProject }: { idea: IdeaSummary; showProject
       )}
       <div className="flex flex-1 flex-col gap-2 p-4">
         {showProject && (
-          <span className="flex items-center gap-1.5 text-xs text-zinc-500">
+          <span className="flex items-center gap-1.5 text-xs text-fg-subtle">
             <span className="size-2 rounded-full" style={{ backgroundColor: idea.projectColor }} />
             {idea.projectName}
           </span>
         )}
-        <h3 className="line-clamp-2 font-medium leading-snug text-zinc-100">{idea.title}</h3>
-        {excerpt && <p className="line-clamp-3 text-sm leading-relaxed text-zinc-400">{excerpt}</p>}
+        <h3 className="line-clamp-2 font-medium leading-snug text-fg">{idea.title}</h3>
+        {excerpt && <p className="line-clamp-3 text-sm leading-relaxed text-fg-muted">{excerpt}</p>}
         {idea.tags.length > 0 && (
           <div className="flex flex-wrap gap-1">
             {idea.tags.slice(0, 4).map((tag) => (
-              <span key={tag} className="rounded bg-zinc-800/80 px-1.5 py-0.5 text-[11px] text-zinc-400">
+              <span key={tag} className="rounded bg-raised px-1.5 py-0.5 text-[11px] text-fg-muted">
                 #{tag}
               </span>
             ))}
-            {idea.tags.length > 4 && <span className="px-1 text-[11px] text-zinc-600">+{idea.tags.length - 4}</span>}
+            {idea.tags.length > 4 && <span className="px-1 text-[11px] text-fg-faint">+{idea.tags.length - 4}</span>}
           </div>
         )}
-        <div className="mt-auto flex items-center gap-3 pt-2 text-xs text-zinc-500">
+        <div className="mt-auto flex items-center gap-3 pt-2 text-xs text-fg-subtle">
           <StatusBadge status={idea.status} />
           <span className={cx('flex items-center gap-1', priority.className)}>
             <Flag className="size-3" />
