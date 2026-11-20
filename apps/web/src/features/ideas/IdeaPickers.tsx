@@ -4,21 +4,35 @@ import { cx } from '../../components/ui';
 import { PRIORITY_OPTIONS, STATUS_OPTIONS } from '../../lib/constants';
 import { formatDateTime } from '../../lib/format';
 
+type Layout = 'grid' | 'inline';
+
 const idleClass = 'text-fg-subtle ring-line hover:text-fg-soft hover:ring-line-strong';
 
-export function StatusPicker({ value, onChange }: { value: IdeaStatus; onChange: (status: IdeaStatus) => void }) {
+const containerClass = (layout: Layout, columns: string) =>
+  layout === 'grid' ? cx('grid gap-1.5', columns) : 'flex flex-wrap items-center gap-1';
+
+const buttonClass = (layout: Layout) =>
+  cx(
+    'flex items-center justify-center gap-1 rounded-lg font-medium ring-1 ring-inset transition',
+    layout === 'grid' ? 'px-2 py-1.5 text-xs' : 'h-7 px-2.5 text-2xs',
+  );
+
+interface PickerProps<T> {
+  value: T;
+  onChange: (value: T) => void;
+  layout?: Layout;
+}
+
+export function StatusPicker({ value, onChange, layout = 'grid' }: PickerProps<IdeaStatus>) {
   return (
-    <div role="group" aria-label="Status" className="grid grid-cols-2 gap-1.5">
+    <div role="group" aria-label="Status" className={containerClass(layout, 'grid-cols-2')}>
       {STATUS_OPTIONS.map((option) => (
         <button
           key={option.value}
           type="button"
           aria-pressed={value === option.value}
           onClick={() => onChange(option.value)}
-          className={cx(
-            'rounded-lg px-2 py-1.5 text-xs font-medium ring-1 ring-inset transition',
-            value === option.value ? option.className : idleClass,
-          )}
+          className={cx(buttonClass(layout), value === option.value ? option.className : idleClass)}
         >
           {option.label}
         </button>
@@ -27,9 +41,9 @@ export function StatusPicker({ value, onChange }: { value: IdeaStatus; onChange:
   );
 }
 
-export function PriorityPicker({ value, onChange }: { value: IdeaPriority; onChange: (priority: IdeaPriority) => void }) {
+export function PriorityPicker({ value, onChange, layout = 'grid' }: PickerProps<IdeaPriority>) {
   return (
-    <div role="group" aria-label="Prioridade" className="grid grid-cols-3 gap-1.5">
+    <div role="group" aria-label="Prioridade" className={containerClass(layout, 'grid-cols-3')}>
       {PRIORITY_OPTIONS.map((option) => (
         <button
           key={option.value}
@@ -37,7 +51,7 @@ export function PriorityPicker({ value, onChange }: { value: IdeaPriority; onCha
           aria-pressed={value === option.value}
           onClick={() => onChange(option.value)}
           className={cx(
-            'flex items-center justify-center gap-1 rounded-lg px-2 py-1.5 text-xs font-medium ring-1 ring-inset transition',
+            buttonClass(layout),
             value === option.value ? cx('bg-raised ring-fg-faint', option.className) : idleClass,
           )}
         >

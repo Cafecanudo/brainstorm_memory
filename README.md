@@ -227,14 +227,14 @@ A ferramenta lembra a última escolha neste navegador. Os filtros funcionam igua
 
 ## Editar, concluir e excluir
 
-- **Ver**: clicar numa ideia abre a **visualização**, só para leitura: texto formatado, anexos, projeto, tags e datas. **Voltar** leva de volta à lista.
-- **Mudar status e prioridade**: na própria visualização, um clique em *Feito*, *Alta* etc. já grava a mudança. Não precisa entrar em edição.
+- **Ver**: clicar numa ideia abre a **visualização**, só para leitura e na largura toda da tela: título, texto formatado e anexos. Logo abaixo do título fica uma linha com o projeto, o status, a prioridade, as tags e quando a ideia foi atualizada. **Voltar** leva de volta à lista.
+- **Mudar status e prioridade**: nessa linha da visualização, um clique em *Feito*, *Alta* etc. já grava a mudança. Não precisa entrar em edição.
 - **Editar**: clique em **Editar**, pressione **E** ou dê **dois cliques no texto**. Altere o que quiser e clique em **Salvar** ou pressione **Ctrl+S**: a ideia é salva e você volta para a visualização. Enquanto houver algo não salvo, aparece o aviso *Alterações não salvas*, e o navegador pede confirmação se você tentar fechar a aba. Para sair sem salvar, use **Voltar**.
 - **Concluir**: mude o status para **Feito**. Se desistir da ideia, use **Descartado** em vez de excluir: ela some das contagens em aberto, mas continua registrada.
 - **Mudar de projeto**: em edição, troque o campo *Projeto* na coluna da direita e salve.
 - **Excluir**: **segure por 3 segundos** o botão *Segure para excluir*, na visualização ou na edição. A exclusão apaga a ideia e todos os anexos dela, e não pode ser desfeita.
 
-A coluna da direita mostra quando a ideia foi criada e quando foi atualizada pela última vez.
+Na edição, a coluna da direita mostra quando a ideia foi criada e quando foi atualizada pela última vez.
 
 ---
 

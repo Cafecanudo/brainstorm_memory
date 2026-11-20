@@ -39,7 +39,8 @@ Protótipo: [prototypes/ideia-visualizacao.html](prototypes/ideia-visualizacao.h
 | Tema | Decisão |
 |---|---|
 | Rotas | `/ideas/:id` é a visualização (só leitura) e `/ideas/:id/edit` é a edição. A lista e os cards abrem a visualização. |
-| Status e prioridade | Mudam direto na visualização, com um clique, e gravam na hora. |
+| Layout da visualização | Largura total, só com título, texto e anexos. Projeto, status, prioridade, tags e data de atualização ficam numa linha compacta abaixo do título, sem coluna lateral. |
+| Status e prioridade | Mudam direto nessa linha da visualização, com um clique, e gravam na hora. |
 | Depois de salvar | Salvar (ou Ctrl+S) volta para a visualização. Voltar na edição também volta para ela, sem salvar. Ideia nova continua voltando para a lista. |
 | Entrar em edição | Botão Editar, tecla E ou dois cliques no texto. |
 | Excluir | Segurar o botão por 3 s, na visualização e na edição. O `window.confirm` saiu. |

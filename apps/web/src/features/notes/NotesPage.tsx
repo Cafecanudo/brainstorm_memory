@@ -25,7 +25,7 @@ export function NotesPage() {
 
   const project = projects.find((item) => item.id === projectFilter);
   const title = projectFilter === UNASSIGNED_PROJECT ? 'Sem projeto' : (project?.name ?? 'Todas as anotações');
-  const defaultProjectId = project ? project.id : null;
+  const defaultProjectId = projectFilter && projectFilter !== UNASSIGNED_PROJECT ? projectFilter : null;
 
   const sessionRef = useRef(noteId ?? '');
   const fromDraft = Boolean((location.state as { fromDraft?: boolean } | null)?.fromDraft);
