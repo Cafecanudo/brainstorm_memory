@@ -1,11 +1,10 @@
-import { FileQuestion, Trash2 } from 'lucide-react';
+import { FileQuestion } from 'lucide-react';
 import { useEffect, useRef, useState } from 'react';
 import { useLocation, useNavigate, useParams, useSearchParams } from 'react-router';
 import { api } from '../../api/client';
 import {
   useCreateIdea,
   useDeleteAttachment,
-  useDeleteIdea,
   useIdea,
   useProjects,
   useTags,
@@ -14,12 +13,14 @@ import {
 } from '../../api/hooks';
 import type { IdeaDetail, IdeaInput } from '../../api/types';
 import type { InlineImage, RichTextEditorHandle } from '../../components/rich-text/types';
-import { Button, ButtonLink, EmptyState, PageSpinner } from '../../components/ui';
-import { errorMessage, formatDateTime } from '../../lib/format';
-import { projectIdeasPath } from '../../lib/routes';
+import { ButtonLink, EmptyState, PageSpinner } from '../../components/ui';
+import { errorMessage } from '../../lib/format';
+import { ideaPath, projectIdeasPath } from '../../lib/routes';
 import { AttachmentPanel } from '../attachments/AttachmentPanel';
 import { toAttachmentItem, toInlineImage } from '../attachments/attachmentItems';
+import { DeleteIdeaButton } from './DeleteIdeaButton';
 import { IdeaForm } from './IdeaForm';
+import { IdeaDates } from './IdeaPickers';
 
 export function IdeaEditorPage() {
   const { id } = useParams();
@@ -177,7 +178,6 @@ function ExistingIdea({ id }: { id: string }) {
   const projectsQuery = useProjects();
   const { data: tags = [] } = useTags();
   const update = useUpdateIdea();
-  const remove = useDeleteIdea();
   const upload = useUploadAttachments();
   const deleteAttachment = useDeleteAttachment();
   const editorRef = useRef<RichTextEditorHandle>(null);
@@ -208,12 +208,6 @@ function ExistingIdea({ id }: { id: string }) {
 
   const uploadImages = async (files: File[]): Promise<InlineImage[]> => (await uploadFiles(files)).map(toInlineImage);
 
-  const handleDelete = async () => {
-    if (!window.confirm(`Excluir a ideia "${idea.title}"? Os anexos também serão apagados.`)) return;
-    await remove.mutateAsync(id);
-    navigate(projectIdeasPath(idea.projectId), { replace: true });
-  };
-
   const attachmentError = upload.error ?? deleteAttachment.error;
 
   return (
@@ -223,30 +217,16 @@ function ExistingIdea({ id }: { id: string }) {
       tagSuggestions={tags}
       submitLabel="Salvar"
       submitting={update.isPending || upload.isPending}
-      error={update.error ?? remove.error}
+      error={update.error}
       editorRef={editorRef}
+      backTo={ideaPath(id)}
       uploadImages={uploadImages}
       onSubmit={async (values) => {
         await update.mutateAsync({ id, input: values });
-        navigate(projectIdeasPath(values.projectId), { replace: true });
+        navigate(ideaPath(id), { replace: true });
       }}
-      headerActions={
-        <Button variant="danger" size="icon" title="Excluir ideia" onClick={handleDelete} disabled={remove.isPending}>
-          <Trash2 />
-        </Button>
-      }
-      meta={
-        <dl className="space-y-1 border-t border-line pt-4 text-xs text-fg-subtle">
-          <div className="flex justify-between gap-2">
-            <dt>Criada</dt>
-            <dd className="text-fg-muted">{formatDateTime(idea.createdAt)}</dd>
-          </div>
-          <div className="flex justify-between gap-2">
-            <dt>Atualizada</dt>
-            <dd className="text-fg-muted">{formatDateTime(idea.updatedAt)}</dd>
-          </div>
-        </dl>
-      }
+      headerActions={<DeleteIdeaButton idea={idea} />}
+      meta={<IdeaDates createdAt={idea.createdAt} updatedAt={idea.updatedAt} />}
     >
       {({ description }) => (
         <AttachmentPanel

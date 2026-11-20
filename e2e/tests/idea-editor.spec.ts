@@ -43,8 +43,8 @@ test.describe('editor de ideias', () => {
 
     await page.getByRole('link', { name: new RegExp(title) }).click();
     await expect(ideaEditor(page).getByRole('heading', { name: 'Objetivo' })).toBeVisible();
-    await expect(page.getByTitle('Remover rust')).toBeVisible();
-    await expect(page.getByTitle('Remover dsp')).toBeVisible();
+    await expect(page.getByText('#rust', { exact: true })).toBeVisible();
+    await expect(page.getByText('#dsp', { exact: true })).toBeVisible();
   });
 
   test('menu / insere bloco de código com a linguagem escolhida', async ({ page, request }) => {
@@ -74,7 +74,7 @@ test.describe('editor de ideias', () => {
     const project = await createProject(request);
     const idea = await createIdea(request, { projectId: project.id, description: 'Texto' });
 
-    await page.goto(`/ideas/${idea.id}`);
+    await page.goto(`/ideas/${idea.id}/edit`);
     await expect(ideaEditor(page)).toContainText('Texto');
     await expect(page.getByText('Alterações não salvas')).toHaveCount(0);
     await page.getByPlaceholder('Título da ideia').fill(`${idea.title} editada`);

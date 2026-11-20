@@ -139,7 +139,7 @@ A descrição das ideias e o texto das anotações usam o mesmo editor. Ele func
 
 Quem já conhece Markdown pode digitar os atalhos de sempre: `## ` vira título, `- ` vira lista, `[ ] ` vira tarefa, `> ` vira citação e ` ``` ` vira bloco de código. O texto continua guardado em Markdown.
 
-![Ideia aberta com a descrição formatada e uma imagem no texto](docs/images/04-detalhe-da-ideia.png)
+![Visualização da ideia com a descrição formatada e uma imagem no texto](docs/images/04-detalhe-da-ideia.png)
 
 ---
 
@@ -227,10 +227,12 @@ A ferramenta lembra a última escolha neste navegador. Os filtros funcionam igua
 
 ## Editar, concluir e excluir
 
-- **Editar**: abra a ideia, altere o que quiser e clique em **Salvar** ou pressione **Ctrl+S**. A ideia é salva e fechada, e você volta para a lista do projeto dela. Enquanto houver algo não salvo, aparece o aviso *Alterações não salvas*, e o navegador pede confirmação se você tentar fechar a aba. Para sair sem salvar, use **Voltar**.
+- **Ver**: clicar numa ideia abre a **visualização**, só para leitura: texto formatado, anexos, projeto, tags e datas. **Voltar** leva de volta à lista.
+- **Mudar status e prioridade**: na própria visualização, um clique em *Feito*, *Alta* etc. já grava a mudança. Não precisa entrar em edição.
+- **Editar**: clique em **Editar**, pressione **E** ou dê **dois cliques no texto**. Altere o que quiser e clique em **Salvar** ou pressione **Ctrl+S**: a ideia é salva e você volta para a visualização. Enquanto houver algo não salvo, aparece o aviso *Alterações não salvas*, e o navegador pede confirmação se você tentar fechar a aba. Para sair sem salvar, use **Voltar**.
 - **Concluir**: mude o status para **Feito**. Se desistir da ideia, use **Descartado** em vez de excluir: ela some das contagens em aberto, mas continua registrada.
-- **Mudar de projeto**: troque o campo *Projeto* na coluna da direita e salve.
-- **Excluir**: clique na **lixeira**, ao lado do botão *Salvar*. A exclusão apaga a ideia e todos os anexos dela, e não pode ser desfeita.
+- **Mudar de projeto**: em edição, troque o campo *Projeto* na coluna da direita e salve.
+- **Excluir**: **segure por 3 segundos** o botão *Segure para excluir*, na visualização ou na edição. A exclusão apaga a ideia e todos os anexos dela, e não pode ser desfeita.
 
 A coluna da direita mostra quando a ideia foi criada e quando foi atualizada pela última vez.
 
@@ -301,8 +303,10 @@ Nada é sobrescrito sem você decidir.
 | **Ctrl+V** | Lista de ideias | Abre uma ideia nova com o print colado |
 | **Ctrl+V** | Dentro do texto | Anexa o print e coloca no texto |
 | **Ctrl+V** | Fora do texto, numa ideia ou anotação em edição | Só anexa o print |
-| **Ctrl+S** | Dentro de uma ideia | Salva e volta para a lista do projeto |
+| **Ctrl+S** | Ideia nova | Cria e volta para a lista do projeto |
+| **Ctrl+S** | Ideia em edição | Salva e volta para a visualização |
 | **Ctrl+S** | Anotação em edição | Grava na hora |
+| **E** | Visualização da ideia | Entra em edição |
 | **E** | Anotação em leitura | Entra em edição |
 | **Esc** | Anotação em edição | Conclui a edição |
 | **/** | Começo de uma linha do texto | Abre o menu de inserção |

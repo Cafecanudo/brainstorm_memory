@@ -1,5 +1,9 @@
 export const projectIdeasPath = (projectId: string) => `/?project=${projectId}`;
 
+export const ideaPath = (id: string) => `/ideas/${id}`;
+
+export const editIdeaPath = (id: string) => `/ideas/${id}/edit`;
+
 export const NEW_NOTE = 'new';
 
 export function notesPath(noteId?: string, search: string | URLSearchParams = ''): string {

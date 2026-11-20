@@ -16,8 +16,10 @@ test.describe('anotações', () => {
     const title = uniqueName('Anotação nova');
     await page.goto('/notes');
     await list(page).getByRole('link', { name: /Nova/ }).waitFor();
-    await page.keyboard.press('n');
-    await expect(page).toHaveURL(/\/notes\/new/);
+    await expect(async () => {
+      await page.keyboard.press('n');
+      await expect(page).toHaveURL(/\/notes\/new/, { timeout: 1000 });
+    }).toPass();
 
     await page.getByLabel('Título da anotação').fill(title);
     await page.keyboard.press('Enter');

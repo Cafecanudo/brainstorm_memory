@@ -1,0 +1,143 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Brainstorm Ideia</title>
+<script src="https://cdn.jsdelivr.net/npm/@tailwindcss/browser@4.1.11"></script>
+<script src="https://unpkg.com/lucide@0.469.0/dist/umd/lucide.min.js"></script>
+<style type="text/tailwindcss">
+  @theme {
+    --text-2xs: 0.75rem; --text-2xs--line-height: 1rem;
+    --text-xs: 0.8125rem; --text-xs--line-height: 1.25rem;
+    --text-sm: 0.9375rem; --text-sm--line-height: 1.4rem;
+    --text-base: 1.0625rem; --text-base--line-height: 1.6rem;
+    --color-sunken: #171513; --color-canvas: #1d1b19; --color-surface: #262321; --color-raised: #302c29; --color-raised-hover: #3a3532;
+    --color-line: #3a3532; --color-line-strong: #4d4641;
+    --color-fg: #efebe7; --color-fg-soft: #d9d2cb; --color-fg-muted: #bdb5ad; --color-fg-subtle: #958c84; --color-fg-faint: #7a716a; --color-fg-ghost: #5c5550;
+    --color-accent: #e0895a; --color-accent-hover: #e89b72; --color-accent-fg: #1d1b19; --color-accent-soft: #f2b896;
+  }
+</style>
+<style>
+  :root { color-scheme: dark; }
+  body { background: var(--color-canvas); color: var(--color-fg); font-size: 1.0625rem; -webkit-font-smoothing: antialiased; }
+  .md { color: var(--color-fg-soft); font-size: .9375rem; line-height: 1.65; }
+  .md > :first-child { margin-top: 0; }
+  .md h2 { color: var(--color-fg); font-weight: 600; font-size: 1.2rem; margin: 1.4em 0 .5em; }
+  .md p { margin: .7em 0; }
+  .md ol { list-style: decimal; padding-left: 1.5em; margin: .7em 0; }
+  .md li::marker { color: var(--color-fg-faint); }
+  .md code { background: var(--color-sunken); padding: .1em .35em; border-radius: 4px; font-size: .85em; color: var(--color-fg); }
+  .md img { max-width: 100%; border-radius: 8px; border: 1px solid var(--color-line); margin: .8em 0; }
+  .pill { display: inline-flex; align-items: center; gap: .35rem; border-radius: .5rem; padding: .35rem .7rem; font-size: .8125rem; font-weight: 500; box-shadow: inset 0 0 0 1px var(--color-line); color: var(--color-fg-subtle); }
+  .pill[aria-pressed="true"] { color: var(--color-fg); background: var(--color-raised); box-shadow: inset 0 0 0 1px var(--color-line-strong); }
+</style>
+</head>
+<body>
+<div class="flex h-dvh overflow-hidden">
+  <aside class="flex w-64 shrink-0 flex-col border-r border-line bg-sunken">
+    <div class="flex items-center gap-2.5 px-5 pt-5 pb-6">
+      <span class="grid size-8 place-items-center rounded-lg bg-accent/15 text-accent-soft ring-1 ring-inset ring-accent/20"><i data-lucide="lightbulb" class="size-4"></i></span>
+      <span class="font-semibold tracking-tight">Brainstorm</span>
+    </div>
+    <nav class="flex-1 space-y-0.5 px-3">
+      <a class="flex items-center gap-2.5 rounded-md bg-raised px-2 py-1.5 text-sm text-fg"><i data-lucide="layers" class="size-4 text-fg-subtle"></i>Ideias<span class="ml-auto text-xs text-fg-subtle">5</span></a>
+      <a class="flex items-center gap-2.5 rounded-md px-2 py-1.5 text-sm text-fg-muted"><i data-lucide="notebook-pen" class="size-4 text-fg-subtle"></i>Anotações<span class="ml-auto text-xs text-fg-subtle">1</span></a>
+      <p class="mt-6 mb-1.5 px-2 text-2xs font-medium uppercase tracking-wider text-fg-subtle">Projetos</p>
+      <a class="flex items-center gap-2.5 rounded-md px-2 py-1.5 text-sm text-fg-muted"><span class="size-2.5 rounded-full" style="background:#6366f1"></span>Blueprint Flow<span class="ml-auto text-xs text-fg-subtle">4</span></a>
+      <a class="flex items-center gap-2.5 rounded-md px-2 py-1.5 text-sm text-fg-muted"><span class="size-2.5 rounded-full" style="background:#22c55e"></span>Claude.MD<span class="ml-auto text-xs text-fg-subtle">1</span></a>
+    </nav>
+  </aside>
+
+  <main class="min-w-0 flex-1 overflow-y-auto">
+    <div class="mx-auto max-w-6xl px-8 py-6">
+      <div class="mb-6 flex items-center gap-3">
+        <button class="inline-flex h-8 items-center gap-1.5 rounded-lg px-2.5 text-xs font-medium text-fg-muted hover:bg-raised hover:text-fg"><i data-lucide="arrow-left" class="size-4"></i>Voltar</button>
+        <div class="ml-auto flex items-center gap-2">
+          <span id="saved" class="hidden items-center gap-1.5 text-2xs text-fg-subtle"><i data-lucide="check" class="size-3.5 text-emerald-400"></i>Status salvo</span>
+          <button title="Segure 3 s para excluir" class="inline-flex h-9 items-center gap-1.5 rounded-lg px-3 text-sm font-medium text-fg-muted hover:bg-rose-500/10 hover:text-rose-400"><i data-lucide="trash-2" class="size-4"></i>Segure para excluir</button>
+          <button class="inline-flex h-9 items-center gap-2 rounded-lg bg-accent px-3.5 text-sm font-medium text-accent-fg shadow-sm shadow-black/20 hover:bg-accent-hover"><i data-lucide="pencil" class="size-4"></i>Editar<kbd class="rounded bg-accent-fg/15 px-1.5 text-2xs font-semibold">E</kbd></button>
+        </div>
+      </div>
+
+      <div class="grid gap-10 lg:grid-cols-[minmax(0,1fr)_260px]">
+        <div class="min-w-0 space-y-6">
+          <h1 class="text-3xl font-semibold tracking-tight">Mensagens de ERRO</h1>
+
+          <article class="md rounded-xl border border-line bg-surface px-5 pt-4 pb-6" title="Dois cliques para editar">
+            <p>Vamos criar um padrão para mensagens de erro.</p>
+            <h2>Requisitos</h2>
+            <ol>
+              <li>Toda tela de erro mostra o <code>código do erro</code> para o suporte</li>
+              <li>Detalhes técnicos só em desenvolvimento</li>
+              <li>Ação principal sempre leva o usuário para um lugar seguro</li>
+            </ol>
+            <img id="print" alt="Tela de acesso negado">
+          </article>
+
+          <section>
+            <h2 class="mb-3 flex items-baseline gap-2 text-sm font-medium text-fg-soft">Anexos <span class="text-xs font-normal text-fg-faint">1</span></h2>
+            <ul class="grid grid-cols-2 gap-3 sm:grid-cols-3">
+              <li class="relative overflow-hidden rounded-lg border border-line bg-sunken">
+                <img id="thumb" class="aspect-video w-full object-cover object-left-top" alt="">
+                <span class="absolute top-1.5 left-1.5 inline-flex items-center gap-1 rounded bg-black/75 px-1.5 py-0.5 text-2xs font-medium text-accent-soft"><i data-lucide="pilcrow" class="size-3"></i>No texto</span>
+                <div class="flex items-center gap-2 px-2.5 py-1.5 text-xs"><i data-lucide="image" class="size-3.5 text-fg-subtle"></i><span class="truncate text-fg-muted">print-20261120-205756.png</span><span class="ml-auto text-fg-faint">78 KB</span></div>
+              </li>
+            </ul>
+          </section>
+        </div>
+
+        <aside class="space-y-6 lg:sticky lg:top-6 lg:self-start">
+          <div class="space-y-1.5">
+            <span class="block text-2xs font-medium uppercase tracking-wider text-fg-subtle">Projeto</span>
+            <span class="inline-flex items-center gap-2 text-sm text-fg-soft"><span class="size-2.5 rounded-full" style="background:#6366f1"></span>Blueprint Flow</span>
+          </div>
+          <div class="space-y-1.5">
+            <span class="block text-2xs font-medium uppercase tracking-wider text-fg-subtle">Status <span class="normal-case tracking-normal text-fg-faint">· muda na hora</span></span>
+            <div class="grid grid-cols-2 gap-1.5" data-group="status">
+              <button class="pill justify-center" aria-pressed="true">Backlog</button>
+              <button class="pill justify-center" aria-pressed="false">Em andamento</button>
+              <button class="pill justify-center" aria-pressed="false">Feito</button>
+              <button class="pill justify-center" aria-pressed="false">Descartado</button>
+            </div>
+          </div>
+          <div class="space-y-1.5">
+            <span class="block text-2xs font-medium uppercase tracking-wider text-fg-subtle">Prioridade <span class="normal-case tracking-normal text-fg-faint">· muda na hora</span></span>
+            <div class="grid grid-cols-3 gap-1.5" data-group="priority">
+              <button class="pill justify-center" aria-pressed="false"><i data-lucide="flag" class="size-3 text-rose-400"></i>Alta</button>
+              <button class="pill justify-center" aria-pressed="true"><i data-lucide="flag" class="size-3 text-sky-400"></i>Média</button>
+              <button class="pill justify-center" aria-pressed="false"><i data-lucide="flag" class="size-3"></i>Baixa</button>
+            </div>
+          </div>
+          <div class="space-y-1.5">
+            <span class="block text-2xs font-medium uppercase tracking-wider text-fg-subtle">Tags</span>
+            <div class="flex flex-wrap gap-1.5"><span class="rounded-md bg-raised px-2 py-0.5 text-xs text-fg-soft">#ux</span><span class="rounded-md bg-raised px-2 py-0.5 text-xs text-fg-soft">#erros</span></div>
+          </div>
+          <dl class="space-y-1 border-t border-line pt-4 text-xs text-fg-subtle">
+            <div class="flex justify-between gap-2"><dt>Criada</dt><dd class="text-fg-muted">20 de nov. de 2026, 17:57</dd></div>
+            <div class="flex justify-between gap-2"><dt>Atualizada</dt><dd class="text-fg-muted">20 de nov. de 2026, 17:57</dd></div>
+          </dl>
+          <p class="text-2xs text-fg-faint"><b class="font-semibold text-fg-subtle">E</b> ou dois cliques no texto para editar</p>
+        </aside>
+      </div>
+    </div>
+  </main>
+</div>
+<script>
+  const svg = `<svg xmlns="http://www.w3.org/2000/svg" width="760" height="420"><rect width="100%" height="100%" rx="12" fill="#22201e"/><rect x="40" y="30" width="680" height="360" rx="12" fill="#2b2826" stroke="#3a3532"/><rect x="200" y="60" width="70" height="40" rx="8" fill="#203a2c" stroke="#3f7a52"/><rect x="320" y="60" width="90" height="40" rx="8" fill="#302c29" stroke="#4d4641"/><rect x="460" y="55" width="60" height="50" rx="10" fill="#3a2f20" stroke="#a37a3a"/><rect x="70" y="150" width="40" height="40" rx="8" fill="#3a2f20" stroke="#a37a3a"/><text x="125" y="168" fill="#efebe7" font-family="Segoe UI" font-size="20" font-weight="700">Você não tem acesso a este projeto</text><text x="125" y="192" fill="#bdb5ad" font-family="Segoe UI" font-size="13">O projeto pertence a uma organização da qual você não é membro.</text><rect x="70" y="215" width="150" height="34" rx="6" fill="#dc2626"/><text x="95" y="237" fill="#fff" font-family="Segoe UI" font-size="13" font-weight="600">Voltar aos projetos</text><rect x="230" y="215" width="160" height="34" rx="6" fill="#302c29" stroke="#4d4641"/><text x="250" y="237" fill="#efebe7" font-family="Segoe UI" font-size="13">Trocar de organização</text><rect x="70" y="300" width="620" height="38" rx="6" fill="#1d1b19" stroke="#3a3532"/><text x="85" y="324" fill="#d9d2cb" font-family="Consolas" font-size="13">GET /api/projects/0193a7c2-5e1f → 403 em 54 ms</text></svg>`;
+  const url = `data:image/svg+xml;charset=utf-8,${encodeURIComponent(svg)}`;
+  document.getElementById('print').src = url;
+  document.getElementById('thumb').src = url;
+  document.querySelectorAll('[data-group] button').forEach((button) =>
+    button.addEventListener('click', () => {
+      button.parentElement.querySelectorAll('button').forEach((b) => b.setAttribute('aria-pressed', String(b === button)));
+      const saved = document.getElementById('saved');
+      saved.classList.remove('hidden');
+      saved.classList.add('inline-flex');
+      setTimeout(() => saved.classList.replace('inline-flex', 'hidden'), 1500);
+    }),
+  );
+  lucide.createIcons();
+</script>
+</body>
+</html>

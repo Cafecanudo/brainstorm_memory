@@ -32,6 +32,18 @@ Protótipo aprovado: [prototypes/anotacoes.html](prototypes/anotacoes.html). Gui
 - [x] **4. e2e.** 40 testes (API e interface). A suíte passou 3 vezes seguidas sem falhas.
 - [x] **5. Documentação.** README com a seção Anotações, o editor novo, as imagens no texto, a exclusão segurando e os testes, além de todos os prints refeitos.
 
+## Concluído: visualização da ideia (20/11/2026)
+
+Protótipo: [prototypes/ideia-visualizacao.html](prototypes/ideia-visualizacao.html).
+
+| Tema | Decisão |
+|---|---|
+| Rotas | `/ideas/:id` é a visualização (só leitura) e `/ideas/:id/edit` é a edição. A lista e os cards abrem a visualização. |
+| Status e prioridade | Mudam direto na visualização, com um clique, e gravam na hora. |
+| Depois de salvar | Salvar (ou Ctrl+S) volta para a visualização. Voltar na edição também volta para ela, sem salvar. Ideia nova continua voltando para a lista. |
+| Entrar em edição | Botão Editar, tecla E ou dois cliques no texto. |
+| Excluir | Segurar o botão por 3 s, na visualização e na edição. O `window.confirm` saiu. |
+
 ## Próximos
 
 - Ligação entre ideias e anotações
@@ -46,6 +58,5 @@ Pontos em que o projeto ainda não segue o padrão global:
 - `pgEnum` trocado por `text` com `check`, chave `uuid` v7, auditoria e `version` em toda tabela, constraints com nome explícito
 - Listas paginadas, que hoje param em 500 itens
 - Rotas de ideias carregadas sob demanda (a de anotações já é)
-- Exclusão de ideia confirmada segurando o botão por 3 s, em vez de `window.confirm` (anexos, anotações e projetos já usam o `HoldButton`)
 - Versões exatas nas dependências antigas (as novas já entram exatas) e hook de pre-commit com lint e typecheck
 - O chunk do editor tem cerca de 230 KB comprimido, quase todo do realce de código (`lowlight` com o conjunto `common`). Dá para carregar só as linguagens da lista.

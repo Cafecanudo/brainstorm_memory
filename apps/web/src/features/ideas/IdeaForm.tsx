@@ -1,14 +1,14 @@
-import { ArrowLeft, Flag, Save } from 'lucide-react';
+import { ArrowLeft, Save } from 'lucide-react';
 import { useEffect, useRef, useState, type ReactNode, type Ref } from 'react';
 import { useNavigate } from 'react-router';
 import type { IdeaInput, Project } from '../../api/types';
 import { Button, Field, Kbd, Spinner, cx, inputClass } from '../../components/ui';
-import { PRIORITY_OPTIONS, STATUS_OPTIONS } from '../../lib/constants';
 import { errorMessage } from '../../lib/format';
 import { projectIdeasPath } from '../../lib/routes';
 import { TagInput } from '../../components/TagInput';
 import { LazyRichTextEditor } from '../../components/rich-text/LazyRichTextEditor';
 import type { InlineImage, RichTextEditorHandle } from '../../components/rich-text/types';
+import { PriorityPicker, StatusPicker } from './IdeaPickers';
 
 interface IdeaFormProps {
   initial: IdeaInput;
@@ -21,6 +21,7 @@ interface IdeaFormProps {
   headerActions?: ReactNode;
   meta?: ReactNode;
   editorRef?: Ref<RichTextEditorHandle>;
+  backTo?: string;
   uploadImages?: (files: File[]) => Promise<InlineImage[]>;
   children?: (state: { description: string }) => ReactNode;
   onSubmit: (values: IdeaInput) => Promise<void>;
@@ -39,6 +40,7 @@ export function IdeaForm({
   headerActions,
   meta,
   editorRef,
+  backTo,
   uploadImages,
   children,
   onSubmit,
@@ -89,6 +91,10 @@ export function IdeaForm({
   }, [dirty]);
 
   const goBack = () => {
+    if (backTo) {
+      navigate(backTo, { replace: true });
+      return;
+    }
     const historyIndex = (window.history.state as { idx?: number } | null)?.idx ?? 0;
     if (historyIndex > 0) navigate(-1);
     else navigate(projectIdeasPath(baseline.projectId));
@@ -164,44 +170,11 @@ export function IdeaForm({
           </Field>
 
           <Field label="Status">
-            <div className="grid grid-cols-2 gap-1.5">
-              {STATUS_OPTIONS.map((option) => (
-                <button
-                  key={option.value}
-                  type="button"
-                  onClick={() => set('status', option.value)}
-                  className={cx(
-                    'rounded-lg px-2 py-1.5 text-xs font-medium ring-1 ring-inset transition',
-                    values.status === option.value
-                      ? option.className
-                      : 'text-fg-subtle ring-line hover:text-fg-soft hover:ring-line-strong',
-                  )}
-                >
-                  {option.label}
-                </button>
-              ))}
-            </div>
+            <StatusPicker value={values.status} onChange={(status) => set('status', status)} />
           </Field>
 
           <Field label="Prioridade">
-            <div className="grid grid-cols-3 gap-1.5">
-              {PRIORITY_OPTIONS.map((option) => (
-                <button
-                  key={option.value}
-                  type="button"
-                  onClick={() => set('priority', option.value)}
-                  className={cx(
-                    'flex items-center justify-center gap-1 rounded-lg px-2 py-1.5 text-xs font-medium ring-1 ring-inset transition',
-                    values.priority === option.value
-                      ? cx('bg-raised ring-fg-faint', option.className)
-                      : 'text-fg-subtle ring-line hover:text-fg-soft hover:ring-line-strong',
-                  )}
-                >
-                  <Flag className="size-3" />
-                  {option.label}
-                </button>
-              ))}
-            </div>
+            <PriorityPicker value={values.priority} onChange={(priority) => set('priority', priority)} />
           </Field>
 
           <Field label="Tags">
