@@ -37,6 +37,12 @@ O Brainstorm roda no seu computador, dentro do Docker.
 
 Para desligar, use `docker compose down`. Suas ideias, anotações e anexos continuam guardados para a próxima vez.
 
+### Acessar de outro aparelho da rede
+
+O site também responde pelo IP do computador na rede local, por exemplo **http://192.168.18.175:8090**, ou pelo nome dele, por exemplo **http://PCGAMER:8090**. Para descobrir o IP, rode `ipconfig` e procure o *Endereço IPv4* da placa de rede (cabo ou Wi-Fi). Se o IP mudar com frequência, reserve um endereço fixo para o computador no roteador.
+
+O banco de dados (porta 5442) só aceita conexões do próprio computador. Ele não fica visível para a rede.
+
 ### Atualizar para uma versão nova
 
 Quando o código mudar, reconstrua com `docker compose up -d --build`. Na primeira subida, a API ajusta o banco sozinha (cria as tabelas novas sem apagar nada). Antes de atualizar, vale fazer um backup do banco:
@@ -324,7 +330,7 @@ Os atalhos de uma letra (**N** e **E**) não funcionam enquanto o cursor está n
 
 - **Tamanho dos arquivos**: até 1 GB por arquivo e até 20 arquivos por envio.
 - **Tags**: até 20 por ideia ou anotação. Elas são gravadas sempre em minúsculas.
-- **Uso pessoal**: a ferramenta não tem login. Use só no seu computador e não deixe o endereço acessível para outras pessoas da rede.
+- **Sem login**: qualquer pessoa da rede que abrir o endereço consegue ver, editar e excluir ideias e anotações. Use só em redes de confiança. No Windows, deixe a rede de casa como **Privada** e evite manter o app ligado em redes públicas (café, aeroporto).
 - **Backup**: as ideias, as anotações e os anexos ficam guardados em dois lugares separados do Docker, um para o banco de dados e outro para os arquivos. Um backup completo precisa copiar os dois.
 - **Vídeos gravados no navegador**: algumas gravações em WEBM, principalmente as feitas por extensões do navegador, não informam a duração. Elas tocam normalmente, mas a barra de progresso pode não deixar avançar para um ponto específico.
 - **Vídeos ficam só como anexo**: dentro do texto entram apenas imagens.
