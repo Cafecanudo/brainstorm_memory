@@ -40,12 +40,12 @@ export function projectRoutes({ projects, storage }: ProjectRoutesDeps): Fastify
 
     app.delete('/:id', async (request, reply) => {
       const { id } = parse(idParamSchema, request.params);
-      const ideaIds = await projects.delete(id);
-      if (!ideaIds) throw notFound('Projeto');
-      const results = await Promise.allSettled(ideaIds.map((ideaId) => storage.deletePrefix(ideaId)));
+      const ownerIds = await projects.delete(id);
+      if (!ownerIds) throw notFound('Projeto');
+      const results = await Promise.allSettled(ownerIds.map((ownerId) => storage.deletePrefix(ownerId)));
       results
         .filter((result): result is PromiseRejectedResult => result.status === 'rejected')
-        .forEach((result) => request.log.warn({ err: result.reason }, 'failed to delete idea media'));
+        .forEach((result) => request.log.warn({ err: result.reason }, 'failed to delete project media'));
       return reply.code(204).send();
     });
   };

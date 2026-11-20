@@ -1,13 +1,28 @@
 import { keepPreviousData, useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 import { api } from './client';
-import type { IdeaFilters, IdeaInput, ProjectInput } from './types';
+import type { AttachmentOwner, IdeaFilters, IdeaInput, NoteFilters, ProjectInput } from './types';
 
 export const queryKeys = {
   projects: ['projects'] as const,
   ideas: (filters: IdeaFilters) => ['ideas', filters] as const,
   idea: (id: string) => ['idea', id] as const,
   tags: ['tags'] as const,
+  notes: (filters: NoteFilters) => ['notes', filters] as const,
+  note: (id: string) => ['note', id] as const,
+  noteCounts: ['note-counts'] as const,
 };
+
+export function useInvalidateNotes() {
+  const queryClient = useQueryClient();
+  return (noteId?: string) =>
+    Promise.all([
+      queryClient.invalidateQueries({ queryKey: ['notes'] }),
+      queryClient.invalidateQueries({ queryKey: queryKeys.noteCounts }),
+      queryClient.invalidateQueries({ queryKey: queryKeys.projects }),
+      queryClient.invalidateQueries({ queryKey: queryKeys.tags }),
+      noteId ? queryClient.invalidateQueries({ queryKey: queryKeys.note(noteId) }) : undefined,
+    ]);
+}
 
 function useInvalidateIdeas() {
   const queryClient = useQueryClient();
@@ -39,10 +54,11 @@ export function useUpdateProject() {
 }
 
 export function useDeleteProject() {
-  const invalidate = useInvalidateIdeas();
+  const invalidateIdeas = useInvalidateIdeas();
+  const invalidateNotes = useInvalidateNotes();
   return useMutation({
     mutationFn: (id: string) => api.projects.remove(id),
-    onSuccess: () => invalidate(),
+    onSuccess: () => Promise.all([invalidateIdeas(), invalidateNotes()]),
   });
 }
 
@@ -55,7 +71,8 @@ export const useIdeas = (filters: IdeaFilters) =>
 
 export const useIdea = (id: string) => useQuery({ queryKey: queryKeys.idea(id), queryFn: () => api.ideas.get(id) });
 
-export const useTags = () => useQuery({ queryKey: queryKeys.tags, queryFn: () => api.tags.list() });
+export const useTags = (kind?: 'idea' | 'note') =>
+  useQuery({ queryKey: [...queryKeys.tags, kind ?? 'all'], queryFn: () => api.tags.list({ kind }) });
 
 export function useCreateIdea() {
   const invalidate = useInvalidateIdeas();
@@ -85,19 +102,58 @@ export function useDeleteIdea() {
   });
 }
 
+interface AttachmentTarget {
+  owner: AttachmentOwner;
+  ownerId: string;
+}
+
+function useInvalidateOwner() {
+  const invalidateIdeas = useInvalidateIdeas();
+  const invalidateNotes = useInvalidateNotes();
+  return ({ owner, ownerId }: AttachmentTarget) => (owner === 'ideas' ? invalidateIdeas(ownerId) : invalidateNotes(ownerId));
+}
+
 export function useUploadAttachments() {
-  const invalidate = useInvalidateIdeas();
+  const invalidate = useInvalidateOwner();
   return useMutation({
-    mutationFn: ({ ideaId, files, onProgress }: { ideaId: string; files: File[]; onProgress?: (ratio: number) => void }) =>
-      api.attachments.upload(ideaId, files, onProgress),
-    onSuccess: (_data, { ideaId }) => invalidate(ideaId),
+    mutationFn: ({ owner, ownerId, files, onProgress }: AttachmentTarget & { files: File[]; onProgress?: (ratio: number) => void }) =>
+      api.attachments.upload(owner, ownerId, files, onProgress),
+    onSuccess: (_data, target) => invalidate(target),
   });
 }
 
 export function useDeleteAttachment() {
-  const invalidate = useInvalidateIdeas();
+  const invalidate = useInvalidateOwner();
   return useMutation({
-    mutationFn: ({ id }: { id: string; ideaId: string }) => api.attachments.remove(id),
-    onSuccess: (_data, { ideaId }) => invalidate(ideaId),
+    mutationFn: ({ id }: AttachmentTarget & { id: string }) => api.attachments.remove(id),
+    onSuccess: (_data, target) => invalidate(target),
+  });
+}
+
+export const useNotes = (filters: NoteFilters) =>
+  useQuery({
+    queryKey: queryKeys.notes(filters),
+    queryFn: () => api.notes.list(filters),
+    placeholderData: keepPreviousData,
+  });
+
+export const useNote = (id: string | undefined) =>
+  useQuery({
+    queryKey: queryKeys.note(id ?? ''),
+    queryFn: () => api.notes.get(id!),
+    enabled: Boolean(id),
+  });
+
+export const useNoteCounts = () => useQuery({ queryKey: queryKeys.noteCounts, queryFn: api.notes.counts });
+
+export function useDeleteNote() {
+  const queryClient = useQueryClient();
+  const invalidate = useInvalidateNotes();
+  return useMutation({
+    mutationFn: (id: string) => api.notes.remove(id),
+    onSuccess: (_data, id) => {
+      queryClient.removeQueries({ queryKey: queryKeys.note(id) });
+      return invalidate();
+    },
   });
 }

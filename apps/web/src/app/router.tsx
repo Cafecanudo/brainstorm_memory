@@ -11,6 +11,10 @@ export const router = createBrowserRouter([
       { index: true, element: <IdeasPage /> },
       { path: 'ideas/new', element: <IdeaEditorPage /> },
       { path: 'ideas/:id', element: <IdeaEditorPage /> },
+      {
+        path: 'notes/:noteId?',
+        lazy: () => import('../features/notes/NotesPage').then(({ NotesPage }) => ({ Component: NotesPage })),
+      },
     ],
   },
 ]);

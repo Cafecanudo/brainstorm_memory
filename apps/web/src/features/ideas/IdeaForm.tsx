@@ -1,13 +1,14 @@
 import { ArrowLeft, Flag, Save } from 'lucide-react';
-import { useEffect, useRef, useState, type ReactNode } from 'react';
+import { useEffect, useRef, useState, type ReactNode, type Ref } from 'react';
 import { useNavigate } from 'react-router';
 import type { IdeaInput, Project } from '../../api/types';
 import { Button, Field, Kbd, Spinner, cx, inputClass } from '../../components/ui';
 import { PRIORITY_OPTIONS, STATUS_OPTIONS } from '../../lib/constants';
 import { errorMessage } from '../../lib/format';
 import { projectIdeasPath } from '../../lib/routes';
-import { MarkdownEditor } from './MarkdownEditor';
-import { TagInput } from './TagInput';
+import { TagInput } from '../../components/TagInput';
+import { LazyRichTextEditor } from '../../components/rich-text/LazyRichTextEditor';
+import type { InlineImage, RichTextEditorHandle } from '../../components/rich-text/types';
 
 interface IdeaFormProps {
   initial: IdeaInput;
@@ -17,10 +18,11 @@ interface IdeaFormProps {
   submitting: boolean;
   error?: unknown;
   forceDirty?: boolean;
-  previewFirst?: boolean;
   headerActions?: ReactNode;
   meta?: ReactNode;
-  children?: ReactNode;
+  editorRef?: Ref<RichTextEditorHandle>;
+  uploadImages?: (files: File[]) => Promise<InlineImage[]>;
+  children?: (state: { description: string }) => ReactNode;
   onSubmit: (values: IdeaInput) => Promise<void>;
 }
 
@@ -34,9 +36,10 @@ export function IdeaForm({
   submitting,
   error,
   forceDirty = false,
-  previewFirst = false,
   headerActions,
   meta,
+  editorRef,
+  uploadImages,
   children,
   onSubmit,
 }: IdeaFormProps) {
@@ -133,12 +136,16 @@ export function IdeaForm({
             placeholder="Título da ideia"
             className="field-sizing-content block w-full resize-none bg-transparent text-3xl leading-tight font-semibold tracking-tight text-fg outline-none placeholder:text-fg-ghost"
           />
-          <MarkdownEditor
-            value={values.description}
+          <LazyRichTextEditor
+            ref={editorRef}
+            value={initial.description}
             onChange={(description) => set('description', description)}
-            defaultMode={previewFirst ? 'preview' : 'write'}
+            editable
+            ariaLabel="Descrição da ideia"
+            placeholder="Contexto, problema, abordagem, links… Digite / para inserir blocos. Print colado aqui entra no texto."
+            uploadImages={uploadImages}
           />
-          {children}
+          {children?.({ description: values.description })}
         </div>
 
         <aside className="space-y-6 lg:sticky lg:top-6 lg:self-start">

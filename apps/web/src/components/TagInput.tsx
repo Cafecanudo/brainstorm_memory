@@ -1,15 +1,18 @@
 import { X } from 'lucide-react';
 import { useId, useState } from 'react';
+import { cx } from './ui';
 
 interface TagInputProps {
   value: string[];
   onChange: (tags: string[]) => void;
   suggestions: string[];
+  variant?: 'field' | 'inline';
+  onEscape?: () => void;
 }
 
 const MAX_TAGS = 20;
 
-export function TagInput({ value, onChange, suggestions }: TagInputProps) {
+export function TagInput({ value, onChange, suggestions, variant = 'field', onEscape }: TagInputProps) {
   const [draft, setDraft] = useState('');
   const listId = useId();
 
@@ -20,7 +23,12 @@ export function TagInput({ value, onChange, suggestions }: TagInputProps) {
   };
 
   return (
-    <div className="flex flex-wrap gap-1.5 rounded-lg bg-surface p-2 ring-1 ring-inset ring-line transition focus-within:ring-accent">
+    <div
+      className={cx(
+        'flex flex-wrap items-center gap-1.5',
+        variant === 'field' && 'rounded-lg bg-surface p-2 ring-1 ring-line transition ring-inset focus-within:ring-accent',
+      )}
+    >
       {value.map((tag) => (
         <span key={tag} className="flex items-center gap-1 rounded bg-raised py-0.5 pr-1 pl-1.5 text-xs text-fg-soft">
           #{tag}
@@ -48,10 +56,13 @@ export function TagInput({ value, onChange, suggestions }: TagInputProps) {
             add(draft);
           } else if (event.key === 'Backspace' && !draft && value.length > 0) {
             onChange(value.slice(0, -1));
+          } else if (event.key === 'Escape' && onEscape) {
+            event.preventDefault();
+            onEscape();
           }
         }}
         onBlur={() => draft && add(draft)}
-        placeholder={value.length ? '' : 'Adicionar tag'}
+        placeholder={value.length ? (variant === 'inline' ? '+ tag' : '') : 'Adicionar tag'}
         className="min-w-20 flex-1 bg-transparent px-1 text-sm outline-none placeholder:text-fg-faint"
       />
       <datalist id={listId}>

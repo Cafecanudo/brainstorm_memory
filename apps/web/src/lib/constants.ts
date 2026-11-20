@@ -35,6 +35,8 @@ export const PRIORITY_META = Object.fromEntries(PRIORITY_OPTIONS.map((option) =>
   PriorityMeta
 >;
 
-export const ACCEPTED_MIME_TYPES = ['image/png', 'image/jpeg', 'image/gif', 'image/webp', 'video/webm', 'video/mp4'];
+export const ACCEPTED_IMAGE_TYPES = ['image/png', 'image/jpeg', 'image/gif', 'image/webp'];
+
+export const ACCEPTED_MIME_TYPES = [...ACCEPTED_IMAGE_TYPES, 'video/webm', 'video/mp4'];
 
 export const PROJECT_COLORS = ['#6366f1', '#22c55e', '#f59e0b', '#ef4444', '#06b6d4', '#a855f7', '#ec4899', '#84cc16'];

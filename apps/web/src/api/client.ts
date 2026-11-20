@@ -1,9 +1,15 @@
 import type {
   Attachment,
+  AttachmentOwner,
   IdeaDetail,
   IdeaFilters,
   IdeaInput,
   IdeaSummary,
+  NoteCounts,
+  NoteDetail,
+  NoteFilters,
+  NoteInput,
+  NoteSummary,
   Project,
   ProjectInput,
 } from './types';
@@ -48,13 +54,18 @@ function toQuery(params: Record<string, string | undefined>): string {
   return query ? `?${query}` : '';
 }
 
-function uploadFiles(ideaId: string, files: File[], onProgress?: (ratio: number) => void): Promise<Attachment[]> {
+function uploadFiles(
+  owner: AttachmentOwner,
+  ownerId: string,
+  files: File[],
+  onProgress?: (ratio: number) => void,
+): Promise<Attachment[]> {
   return new Promise((resolve, reject) => {
     const form = new FormData();
     files.forEach((file, index) => form.append(`file${index}`, file, file.name));
 
     const xhr = new XMLHttpRequest();
-    xhr.open('POST', `${BASE_URL}/ideas/${ideaId}/attachments`);
+    xhr.open('POST', `${BASE_URL}/${owner}/${ownerId}/attachments`);
     xhr.responseType = 'json';
     xhr.upload.onprogress = (event) => {
       if (event.lengthComputable) onProgress?.(event.loaded / event.total);
@@ -88,8 +99,21 @@ export const api = {
       request<IdeaDetail>(`/ideas/${id}`, { method: 'PATCH', body: JSON.stringify(input) }),
     remove: (id: string) => request<void>(`/ideas/${id}`, { method: 'DELETE' }),
   },
+  notes: {
+    list: (filters: NoteFilters) => request<NoteSummary[]>(`/notes${toQuery({ ...filters })}`),
+    counts: () => request<NoteCounts>('/notes/counts'),
+    get: (id: string) => request<NoteDetail>(`/notes/${id}`),
+    create: (input: Partial<NoteInput>) => request<NoteDetail>('/notes', { method: 'POST', body: JSON.stringify(input) }),
+    update: (id: string, version: number, input: Partial<NoteInput>) =>
+      request<NoteDetail>(`/notes/${id}`, {
+        method: 'PATCH',
+        body: JSON.stringify(input),
+        headers: { 'If-Match': `"${version}"` },
+      }),
+    remove: (id: string) => request<void>(`/notes/${id}`, { method: 'DELETE' }),
+  },
   tags: {
-    list: (projectId?: string) => request<string[]>(`/tags${toQuery({ projectId })}`),
+    list: (filters: { projectId?: string; kind?: 'idea' | 'note' } = {}) => request<string[]>(`/tags${toQuery(filters)}`),
   },
   attachments: {
     upload: uploadFiles,

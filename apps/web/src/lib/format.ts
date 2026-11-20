@@ -36,11 +36,17 @@ export function formatBytes(bytes: number): string {
 
 export function stripMarkdown(markdown: string): string {
   return markdown
-    .replace(/```[\s\S]*?```/g, ' ')
-    .replace(/!\[[^\]]*]\([^)]*\)/g, ' ')
+    .replace(/```[\s\S]*?(?:```|$)/g, ' ')
+    .replace(/!\[[^\]]*(?:](?:\([^)]*\)?)?)?/g, ' ')
     .replace(/\[([^\]]*)]\([^)]*\)/g, '$1')
-    .replace(/^\s*(?:[-+*]|\d+\.)\s+/gm, ' ')
-    .replace(/[#>*`~]+/g, ' ')
+    .replace(/^\s*\|?(?:\s*:?-{3,}:?\s*\|)+\s*:?-*:?\s*$/gm, ' ')
+    .replace(/^\s*(?:[-+*]|\d+\.)\s+(?:\[[ xX]]\s+)?/gm, ' ')
+    .replace(/\s*\|\s*/g, ' · ')
+    .replace(/&nbsp;/g, ' ')
+    .replace(/[#>]+/g, ' ')
+    .replace(/[*`~]+/g, '')
+    .replace(/(?:\s*·\s*)+/g, ' · ')
+    .replace(/^\s*·\s*|\s*·\s*$/gm, '')
     .replace(/\s+/g, ' ')
     .trim();
 }

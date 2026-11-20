@@ -1,0 +1,45 @@
+name: brainstorm-e2e
+
+services:
+  db:
+    image: postgres:17-alpine
+    environment:
+      POSTGRES_USER: brainstorm_e2e
+      POSTGRES_PASSWORD: brainstorm_e2e
+      POSTGRES_DB: brainstorm_e2e
+    tmpfs:
+      - /var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U brainstorm_e2e -d brainstorm_e2e"]
+      interval: 2s
+      timeout: 3s
+      retries: 20
+
+  api:
+    build:
+      context: .
+      dockerfile: apps/api/Dockerfile
+    environment:
+      DATABASE_URL: postgres://brainstorm_e2e:brainstorm_e2e@db:5432/brainstorm_e2e
+      STORAGE_DIR: /data/media
+      LOG_LEVEL: warn
+    tmpfs:
+      - /data/media:uid=1000,gid=1000
+    depends_on:
+      db:
+        condition: service_healthy
+    healthcheck:
+      test: ["CMD-SHELL", "wget -qO- http://127.0.0.1:3000/api/health || exit 1"]
+      interval: 2s
+      timeout: 3s
+      retries: 30
+
+  web:
+    build:
+      context: .
+      dockerfile: apps/web/Dockerfile
+    ports:
+      - "${E2E_WEB_PORT:-8091}:80"
+    depends_on:
+      api:
+        condition: service_healthy

@@ -11,7 +11,7 @@ export function partitionFiles(files: File[]) {
   return { accepted, rejected };
 }
 
-function normalizePastedFile(file: File): File {
+export function normalizePastedFile(file: File): File {
   if (file.name && !/^image\.\w+$/i.test(file.name)) return file;
   return new File([file], timestampedName(file), { type: file.type, lastModified: Date.now() });
 }
@@ -26,6 +26,7 @@ export function usePasteFiles(onFiles: (files: File[]) => void, enabled = true) 
   useEffect(() => {
     if (!enabled) return;
     const handlePaste = (event: ClipboardEvent) => {
+      if (event.defaultPrevented) return;
       const files = Array.from(event.clipboardData?.files ?? []);
       if (files.length === 0) return;
       event.preventDefault();

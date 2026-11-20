@@ -8,6 +8,7 @@ import {
   type IdeaRow,
   type IdeaStatus,
 } from '../../db/schema.js';
+import { containsPattern } from '../../shared/sql.js';
 
 export interface IdeaFilters {
   projectId?: string;
@@ -28,8 +29,6 @@ export interface IdeaCreate {
 
 export type IdeaUpdate = Partial<IdeaCreate>;
 
-const escapeLike = (value: string) => value.replace(/[\\%_]/g, '\\$&');
-
 export class IdeaRepository {
   constructor(private readonly db: Database) {}
 
@@ -40,7 +39,7 @@ export class IdeaRepository {
     if (filters.priority) conditions.push(eq(ideas.priority, filters.priority));
     if (filters.tag) conditions.push(arrayContains(ideas.tags, [filters.tag]));
     if (filters.q) {
-      const pattern = `%${escapeLike(filters.q)}%`;
+      const pattern = containsPattern(filters.q);
       conditions.push(or(ilike(ideas.title, pattern), ilike(ideas.description, pattern))!);
     }
 
@@ -133,14 +132,5 @@ export class IdeaRepository {
   async delete(id: string): Promise<boolean> {
     const deleted = await this.db.delete(ideas).where(eq(ideas.id, id)).returning({ id: ideas.id });
     return deleted.length > 0;
-  }
-
-  async listTags(projectId?: string): Promise<string[]> {
-    const rows = await this.db
-      .selectDistinct({ tag: sql<string>`unnest(${ideas.tags})`.as('tag') })
-      .from(ideas)
-      .where(projectId ? eq(ideas.projectId, projectId) : undefined)
-      .orderBy(sql`1`);
-    return rows.map((row) => row.tag);
   }
 }

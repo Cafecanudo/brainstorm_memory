@@ -1,0 +1,16 @@
+{
+  "name": "@brainstorm/e2e",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "stack:up": "docker compose -f ../docker-compose.e2e.yml up -d --build --wait",
+    "stack:down": "docker compose -f ../docker-compose.e2e.yml down",
+    "test": "playwright test",
+    "typecheck": "tsc --noEmit"
+  },
+  "devDependencies": {
+    "@playwright/test": "1.65.1",
+    "@types/node": "26.6.6",
+    "typescript": "7.0.2"
+  }
+}

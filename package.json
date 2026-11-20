@@ -3,13 +3,17 @@
   "private": true,
   "workspaces": [
     "apps/api",
-    "apps/web"
+    "apps/web",
+    "e2e"
   ],
   "scripts": {
     "dev:api": "npm run dev -w apps/api",
     "dev:web": "npm run dev -w apps/web",
     "build": "npm run build --workspaces",
     "typecheck": "npm run typecheck --workspaces",
-    "db:generate": "npm run db:generate -w apps/api"
+    "db:generate": "npm run db:generate -w apps/api",
+    "e2e:up": "npm run stack:up -w e2e",
+    "e2e:down": "npm run stack:down -w e2e",
+    "test:e2e": "npm test -w e2e"
   }
 }

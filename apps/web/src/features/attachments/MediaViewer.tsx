@@ -19,12 +19,15 @@ export function MediaViewer({ items, index, onIndexChange, onClose }: MediaViewe
 
   useEffect(() => {
     const handleKey = (event: KeyboardEvent) => {
-      if (event.key === 'Escape') onClose();
+      if (event.key === 'Escape') {
+        event.preventDefault();
+        onClose();
+      }
       else if (event.key === 'ArrowRight' && count > 1) onIndexChange((index + 1) % count);
       else if (event.key === 'ArrowLeft' && count > 1) onIndexChange((index - 1 + count) % count);
     };
-    window.addEventListener('keydown', handleKey);
-    return () => window.removeEventListener('keydown', handleKey);
+    window.addEventListener('keydown', handleKey, true);
+    return () => window.removeEventListener('keydown', handleKey, true);
   }, [index, count, onClose, onIndexChange]);
 
   if (!item) return null;

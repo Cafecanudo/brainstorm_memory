@@ -10,6 +10,8 @@ export interface Project {
   updatedAt: string;
   ideaCount: number;
   openCount: number;
+  noteCount: number;
+  attachmentCount: number;
 }
 
 export interface ProjectInput {
@@ -65,4 +67,49 @@ export interface IdeaFilters {
   priority?: IdeaPriority;
   tag?: string;
   q?: string;
+}
+
+export type AttachmentOwner = 'ideas' | 'notes';
+
+export const UNASSIGNED_PROJECT = 'none';
+
+interface NoteBase {
+  id: string;
+  projectId: string | null;
+  projectName: string | null;
+  projectColor: string | null;
+  title: string;
+  tags: string[];
+  pinned: boolean;
+  version: number;
+  createdAt: string;
+  updatedAt: string;
+}
+
+export interface NoteSummary extends NoteBase {
+  excerpt: string;
+}
+
+export interface NoteDetail extends NoteBase {
+  body: string;
+  attachments: Attachment[];
+}
+
+export interface NoteInput {
+  projectId: string | null;
+  title: string;
+  body: string;
+  tags: string[];
+  pinned: boolean;
+}
+
+export interface NoteFilters {
+  projectId?: string;
+  tag?: string;
+  q?: string;
+}
+
+export interface NoteCounts {
+  total: number;
+  unassigned: number;
 }

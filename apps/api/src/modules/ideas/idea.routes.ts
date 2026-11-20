@@ -2,17 +2,12 @@ import type { FastifyPluginAsync } from 'fastify';
 import { z } from 'zod';
 import { ideaPriority, ideaStatus } from '../../db/schema.js';
 import { notFound, parse } from '../../shared/errors.js';
-import { idParamSchema } from '../../shared/schemas.js';
+import { idParamSchema, searchSchema, tagFilterSchema, tagsSchema } from '../../shared/schemas.js';
 import type { StorageProvider } from '../../storage/storage-provider.js';
 import type { IdeaRepository } from './idea.repository.js';
 
 const statusSchema = z.enum(ideaStatus.enumValues);
 const prioritySchema = z.enum(ideaPriority.enumValues);
-
-const tagsSchema = z
-  .array(z.string().trim().toLowerCase().min(1).max(40))
-  .max(20)
-  .transform((tags) => [...new Set(tags)]);
 
 const ideaBaseSchema = z.object({
   projectId: z.uuid(),
@@ -36,11 +31,9 @@ const listQuerySchema = z.object({
   projectId: z.uuid().optional(),
   status: statusSchema.optional(),
   priority: prioritySchema.optional(),
-  tag: z.string().trim().toLowerCase().min(1).optional(),
-  q: z.string().trim().min(1).max(200).optional(),
+  tag: tagFilterSchema.optional(),
+  q: searchSchema.optional(),
 });
-
-const tagsQuerySchema = z.object({ projectId: z.uuid().optional() });
 
 export interface IdeaRoutesDeps {
   ideas: IdeaRepository;
@@ -78,11 +71,6 @@ export function ideaRoutes({ ideas, storage }: IdeaRoutesDeps): FastifyPluginAsy
         .deletePrefix(id)
         .catch((err: unknown) => request.log.warn({ err }, 'failed to delete idea media'));
       return reply.code(204).send();
-    });
-
-    app.get('/tags', async (request) => {
-      const { projectId } = parse(tagsQuerySchema, request.query);
-      return ideas.listTags(projectId);
     });
   };
 }

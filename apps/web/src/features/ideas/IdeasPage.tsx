@@ -61,7 +61,7 @@ export function IdeasPage() {
 
   const projectsQuery = useProjects();
   const projects = projectsQuery.data ?? [];
-  const { data: tags = [] } = useTags();
+  const { data: tags = [] } = useTags('idea');
   const ideasQuery = useIdeas({ projectId, status, priority, tag, q });
   const project = projects.find((item) => item.id === projectId);
   const hasProjects = projects.length > 0;

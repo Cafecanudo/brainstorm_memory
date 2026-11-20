@@ -20,13 +20,15 @@ export interface IncomingFile {
   file: Readable & { truncated?: boolean };
 }
 
+export type AttachmentOwner = { kind: 'idea'; id: string } | { kind: 'note'; id: string };
+
 export class AttachmentService {
   constructor(
     private readonly repository: AttachmentRepository,
     private readonly storage: StorageProvider,
   ) {}
 
-  async store(ideaId: string, incoming: IncomingFile): Promise<AttachmentRow> {
+  async store(owner: AttachmentOwner, incoming: IncomingFile): Promise<AttachmentRow> {
     const mimeType = incoming.mimetype.split(';')[0]!.trim().toLowerCase();
     const type = SUPPORTED_TYPES[mimeType];
     if (!type) {
@@ -37,7 +39,7 @@ export class AttachmentService {
     }
 
     const id = randomUUID();
-    const storageKey = `${ideaId}/${id}${type.extension}`;
+    const storageKey = `${owner.id}/${id}${type.extension}`;
     const { sizeBytes } = await this.storage.save(storageKey, incoming.file);
 
     if (incoming.file.truncated) {
@@ -48,7 +50,8 @@ export class AttachmentService {
     try {
       return await this.repository.create({
         id,
-        ideaId,
+        ideaId: owner.kind === 'idea' ? owner.id : null,
+        noteId: owner.kind === 'note' ? owner.id : null,
         kind: type.kind,
         mimeType,
         originalName: incoming.filename || `${id}${type.extension}`,

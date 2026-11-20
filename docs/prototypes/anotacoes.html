@@ -1,0 +1,1407 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Brainstorm Anotações</title>
+<script src="https://cdn.jsdelivr.net/npm/@tailwindcss/browser@4.1.11"></script>
+<script src="https://unpkg.com/lucide@0.469.0/dist/umd/lucide.min.js"></script>
+<script type="importmap">
+{
+  "imports": {
+    "@tiptap/core": "https://esm.sh/@tiptap/core@3.35.0",
+    "@tiptap/starter-kit": "https://esm.sh/@tiptap/starter-kit@3.35.0",
+    "@tiptap/markdown": "https://esm.sh/@tiptap/markdown@3.35.0",
+    "@tiptap/extension-table": "https://esm.sh/@tiptap/extension-table@3.35.0",
+    "@tiptap/extension-list": "https://esm.sh/@tiptap/extension-list@3.35.0",
+    "@tiptap/extension-code-block-lowlight": "https://esm.sh/@tiptap/extension-code-block-lowlight@3.35.0",
+    "@tiptap/extensions": "https://esm.sh/@tiptap/extensions@3.35.0",
+    "@tiptap/extension-image": "https://esm.sh/@tiptap/extension-image@3.35.0",
+    "lowlight": "https://esm.sh/lowlight@3.3.0"
+  }
+}
+</script>
+<style type="text/tailwindcss">
+  @theme {
+    --text-2xs: 0.75rem;
+    --text-2xs--line-height: 1rem;
+    --text-xs: 0.8125rem;
+    --text-xs--line-height: 1.25rem;
+    --text-sm: 0.9375rem;
+    --text-sm--line-height: 1.4rem;
+    --text-base: 1.0625rem;
+    --text-base--line-height: 1.6rem;
+
+    --color-sunken: #171513;
+    --color-canvas: #1d1b19;
+    --color-surface: #262321;
+    --color-raised: #302c29;
+    --color-raised-hover: #3a3532;
+    --color-line: #3a3532;
+    --color-line-strong: #4d4641;
+    --color-fg: #efebe7;
+    --color-fg-soft: #d9d2cb;
+    --color-fg-muted: #bdb5ad;
+    --color-fg-subtle: #958c84;
+    --color-fg-faint: #7a716a;
+    --color-fg-ghost: #5c5550;
+    --color-accent: #e0895a;
+    --color-accent-hover: #e89b72;
+    --color-accent-fg: #1d1b19;
+    --color-accent-soft: #f2b896;
+  }
+</style>
+<style>
+  :root { color-scheme: dark; }
+  body { background: var(--color-canvas); color: var(--color-fg); font-size: 1.0625rem; -webkit-font-smoothing: antialiased; }
+  ::selection { background: rgb(224 137 90 / .35); }
+  .thin { scrollbar-width: thin; scrollbar-color: var(--color-line-strong) transparent; }
+
+  .md { color: var(--color-fg-soft); font-size: .9375rem; line-height: 1.65; }
+  .md > :first-child { margin-top: 0; }
+  .md h1, .md h2, .md h3 { color: var(--color-fg); font-weight: 600; margin: 1.4em 0 .5em; line-height: 1.3; }
+  .md h1 { font-size: 1.4rem; } .md h2 { font-size: 1.2rem; } .md h3 { font-size: 1.05rem; }
+  .md p { margin: .7em 0; }
+  .md ul, .md ol { margin: .7em 0; padding-left: 1.5em; }
+  .md ul { list-style: disc; } .md ol { list-style: decimal; }
+  .md li { margin: .2em 0; } .md li::marker { color: var(--color-fg-faint); }
+  .md strong { color: var(--color-fg); }
+  .md a { color: var(--color-accent-soft); text-decoration: underline; }
+  .md code { background: var(--color-sunken); padding: .1em .35em; border-radius: 4px; font-size: .85em; color: var(--color-fg); }
+  .md pre { background: var(--color-sunken); padding: .9em 1em; border-radius: 8px; overflow-x: auto; margin: .9em 0; }
+  .md pre code { background: none; padding: 0; color: var(--color-fg-soft); }
+  .md blockquote { border-left: 3px solid var(--color-line-strong); padding-left: 1em; margin: .9em 0; color: var(--color-fg-muted); font-style: italic; }
+  .md table { width: 100%; border-collapse: collapse; margin: .9em 0; font-size: .875rem; }
+  .md th, .md td { text-align: left; padding: .45em .7em; border-bottom: 1px solid var(--color-line); }
+  .md th { color: var(--color-fg); border-bottom-color: var(--color-line-strong); font-weight: 600; }
+
+  .md hr { border: 0; border-top: 1px solid var(--color-line-strong); margin: 1.4em 0; }
+  .md ul[data-type="taskList"] { list-style: none; padding-left: .15em; }
+  .md ul[data-type="taskList"] li { display: flex; gap: .6em; align-items: flex-start; }
+  .md ul[data-type="taskList"] li > label { margin-top: .3em; flex-shrink: 0; }
+  .md ul[data-type="taskList"] li > div { flex: 1; min-width: 0; }
+  .md ul[data-type="taskList"] li > div > p { margin: 0; }
+  .md ul[data-type="taskList"] li[data-checked="true"] > div { color: var(--color-fg-faint); text-decoration: line-through; }
+  .md input[type="checkbox"] { accent-color: var(--color-accent); width: 1rem; height: 1rem; cursor: pointer; }
+
+  .ProseMirror { outline: none; padding: 1.1rem 1.4rem 3rem; min-height: 100%; }
+  .ProseMirror p.is-editor-empty:first-child::before { content: attr(data-placeholder); color: var(--color-fg-faint); float: left; height: 0; pointer-events: none; }
+  .ProseMirror table { table-layout: fixed; overflow: hidden; }
+  .ProseMirror th, .ProseMirror td { border: 1px solid var(--color-line); position: relative; vertical-align: top; }
+  .ProseMirror th { background: var(--color-raised); }
+  .ProseMirror td p, .ProseMirror th p { margin: 0; }
+  .ProseMirror .selectedCell::after { content: ''; position: absolute; inset: 0; background: rgb(224 137 90 / .15); pointer-events: none; }
+  .ProseMirror pre { position: relative; }
+  .ProseMirror pre::after { content: attr(data-lang); position: absolute; top: .45em; right: .7em; font: 600 .65rem/1 ui-sans-serif, system-ui; letter-spacing: .05em; text-transform: uppercase; color: var(--color-fg-faint); }
+
+  .md img { display: block; max-width: 100%; height: auto; border-radius: 8px; border: 1px solid var(--color-line); margin: .8em 0; }
+  .ProseMirror img { cursor: default; }
+  .ProseMirror img.ProseMirror-selectednode { outline: 2px solid var(--color-accent); outline-offset: 2px; }
+
+  .copy-code { position: absolute; top: .45em; right: .5em; z-index: 1; opacity: 0; font: 600 .7rem/1 ui-sans-serif, system-ui; padding: .4em .65em; border-radius: 6px; background: var(--color-raised); color: var(--color-fg-soft); border: 1px solid var(--color-line-strong); cursor: pointer; transition: opacity .15s; }
+  .copy-code:hover { color: var(--color-fg); background: var(--color-raised-hover); }
+  .ProseMirror pre:hover .copy-code { opacity: 1; }
+  .ProseMirror pre:hover::after { opacity: 0; }
+
+  .hljs-comment, .hljs-quote { color: #7a716a; font-style: italic; }
+  .hljs-keyword, .hljs-selector-tag, .hljs-built_in, .hljs-type { color: #e0895a; }
+  .hljs-string, .hljs-regexp, .hljs-addition { color: #a3be8c; }
+  .hljs-number, .hljs-literal, .hljs-symbol { color: #d8a657; }
+  .hljs-variable, .hljs-template-variable, .hljs-attr, .hljs-attribute { color: #89b4d6; }
+  .hljs-title, .hljs-section, .hljs-name { color: #f2b896; font-weight: 600; }
+  .hljs-meta, .hljs-deletion { color: #c97b7b; }
+
+  .hold { position: relative; overflow: hidden; }
+  .hold::before { content: ''; position: absolute; inset: 0; background: rgb(244 63 94 / .28); transform: scaleX(0); transform-origin: left; transition: transform .2s ease-out; }
+  .hold.holding::before { transform: scaleX(1); transition: transform 3s linear; }
+  .hold > * { position: relative; }
+</style>
+</head>
+<body>
+<div class="flex h-dvh overflow-hidden">
+  <aside id="sidebar" class="flex w-64 shrink-0 flex-col border-r border-line bg-sunken"></aside>
+  <main id="main" class="flex min-w-0 flex-1 overflow-hidden"></main>
+</div>
+
+<div class="fixed right-4 bottom-4 w-72 rounded-xl border border-dashed border-line-strong bg-sunken/95 p-3 shadow-xl shadow-black/40">
+  <p class="text-2xs font-medium uppercase tracking-wider text-fg-subtle">Só no protótipo · simular</p>
+  <div class="mt-2 flex gap-1.5">
+    <button data-action="simulate" data-kind="conflict" class="h-7 flex-1 rounded-md bg-surface text-2xs font-medium text-fg-soft ring-1 ring-inset ring-line hover:bg-raised">Conflito entre abas</button>
+    <button data-action="simulate" data-kind="error" class="h-7 flex-1 rounded-md bg-surface text-2xs font-medium text-fg-soft ring-1 ring-inset ring-line hover:bg-raised">Falha ao salvar</button>
+  </div>
+  <p id="sim-hint" class="mt-2 text-2xs text-fg-faint">Para ver a exclusão de projeto, passe o mouse num projeto e clique na lixeira.</p>
+</div>
+
+<input id="file-inline" type="file" accept="image/png,image/jpeg,image/gif,image/webp" multiple hidden>
+<input id="file-attach" type="file" accept="image/png,image/jpeg,image/gif,image/webp,video/webm,video/mp4" multiple hidden>
+<div id="lightbox" class="fixed inset-0 z-50 hidden items-center justify-center bg-black/85 p-10" data-action="close-lightbox"></div>
+
+<div id="slash" role="listbox" class="fixed z-50 hidden w-72 rounded-xl border border-line-strong bg-raised p-1 shadow-2xl shadow-black/50"></div>
+
+<script type="module">
+import { Editor } from '@tiptap/core';
+import { StarterKit } from '@tiptap/starter-kit';
+import { Markdown } from '@tiptap/markdown';
+import { TableKit } from '@tiptap/extension-table';
+import { TaskList, TaskItem } from '@tiptap/extension-list';
+import { CodeBlockLowlight } from '@tiptap/extension-code-block-lowlight';
+import { Image } from '@tiptap/extension-image';
+import { Placeholder } from '@tiptap/extensions';
+import { createLowlight, common } from 'lowlight';
+
+const lowlight = createLowlight(common);
+
+const H = 3600e3, D = 24 * H, NOW = Date.now();
+
+const PROJECTS = [
+  { id: 'esp32', name: 'ESP32 Cam', color: '#ec4899', ideas: 1, attachments: 1 },
+  { id: 'pix', name: 'Gateway PIX', color: '#f59e0b', ideas: 2, attachments: 3 },
+  { id: 'port', name: 'Portfólio', color: '#06b6d4', ideas: 1, attachments: 1 },
+  { id: 'sb', name: 'SoundBridge', color: '#22c55e', ideas: 3, attachments: 2 },
+];
+
+function fakePrint(title, lines, accent) {
+  const xml = (v) => v.replace(/[&<>]/g, (c) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;' })[c]);
+  const rows = lines.map((line, i) => `<text x="24" y="${78 + i * 24}" fill="${i === 0 ? accent : '#d9d2cb'}" font-family="Consolas, monospace" font-size="15" xml:space="preserve">${xml(line)}</text>`).join('');
+  const svg = `<svg xmlns="http://www.w3.org/2000/svg" width="720" height="${110 + lines.length * 24}"><rect width="100%" height="100%" rx="10" fill="#141210"/><rect width="100%" height="36" rx="10" fill="#2a2623"/><circle cx="22" cy="18" r="6" fill="#e06c5a"/><circle cx="42" cy="18" r="6" fill="#e0b25a"/><circle cx="62" cy="18" r="6" fill="#7bbf6a"/><text x="86" y="23" fill="#958c84" font-family="Segoe UI, sans-serif" font-size="13">${xml(title)}</text>${rows}</svg>`;
+  return `data:image/svg+xml;charset=utf-8,${encodeURIComponent(svg).replace(/\(/g, '%28').replace(/\)/g, '%29')}`;
+}
+
+const PRINT_DF = fakePrint('Terminal — docker system df', [
+  '$ docker system df',
+  'TYPE            TOTAL     ACTIVE    SIZE      RECLAIMABLE',
+  'Images          41        6         18.2GB    14.9GB (81%)',
+  'Containers      9         6         412MB     0B (0%)',
+  'Local Volumes   12        5         6.3GB     2.1GB (33%)',
+  'Build Cache     318       0         9.7GB     9.7GB',
+], '#e0895a');
+const PRINT_VOLUMES = fakePrint('Docker Desktop — Volumes', [
+  'NAME                  IN USE    SIZE',
+  'brainstorm_pgdata     sim       184 MB',
+  'brainstorm_media      sim       2.4 GB',
+  'blueprint_pg          não       1.1 GB',
+], '#89b4d6');
+
+let notes = [
+  {
+    id: 'n1', projectId: null, pinned: true, tags: ['docker', 'cli'],
+    title: 'Comandos Docker que sempre esqueço',
+    createdAt: NOW - 40 * D, updatedAt: NOW - 2 * H,
+    body: "## Limpeza\n\n```bash\ndocker system df\ndocker builder prune --filter until=72h\ndocker image prune -a --filter until=168h\n```\n\n## Logs\n\n```bash\ndocker compose logs -f --since 10m api\n```\n\n> Nunca usar `docker compose down -v` neste projeto: apaga os volumes.",
+  },
+  {
+    id: 'n2', projectId: 'pix', pinned: true, tags: ['pix', 'mtls'],
+    title: 'Endpoints e certificados por ambiente',
+    createdAt: NOW - 30 * D, updatedAt: NOW - 26 * H,
+    body: "| Ambiente | Base URL | Certificado |\n|---|---|---|\n| Homologação | `https://api-h.exemplo.local` | `certs/hml/client.p12` |\n| Produção | `https://api.exemplo.local` | cofre de segredos |\n\n- Timeout de conexão: **5 s**; leitura: **10 s**\n- O certificado de homologação vence em **03/2027**",
+  },
+  {
+    id: 'n3', projectId: 'pix', pinned: false, tags: ['adr', 'kafka'],
+    title: 'Decisão: idempotência por endToEndId',
+    createdAt: NOW - 12 * D, updatedAt: NOW - 5 * D,
+    body: "## Contexto\n\nO consumer reprocessou mensagens depois de um rebalance e creditou duas vezes.\n\n## Decisão\n\nGravar o `endToEndId` com constraint única antes de creditar. Duplicata vira *no-op* com log em nível `INFO`.\n\n## Consequências\n\n- Reprocessamento seguro\n- Uma escrita a mais por transação",
+  },
+  {
+    id: 'n4', projectId: 'esp32', pinned: false, tags: ['hardware'],
+    title: 'Pinagem da AI-Thinker',
+    createdAt: NOW - 20 * D, updatedAt: NOW - 3 * D,
+    body: "| Função | GPIO |\n|---|---|\n| LED do flash | 4 |\n| SD (CLK / CMD / D0) | 14 / 15 / 2 |\n| Livres com a câmera ligada | 12, 13 |\n\n> GPIO 12 em nível alto no boot muda a tensão da flash. Evitar pull-up nele.",
+  },
+  {
+    id: 'n5', projectId: 'sb', pinned: false, tags: ['dsp'],
+    title: 'Perfis de transmissão',
+    createdAt: NOW - 9 * D, updatedAt: NOW - 40 * 60e3,
+    body: "| Perfil | Taxa | Uso |\n|---|---|---|\n| `robusto` | 1,2 kbit/s | cabo longo ou com ruído |\n| `padrao` | 4,8 kbit/s | uso geral |\n| `rapido` | 9,6 kbit/s | cabo curto |\n\nValores medidos com cabo P2 de 1,5 m.",
+  },
+  {
+    id: 'n6', projectId: null, pinned: false, tags: ['processo'],
+    title: 'Checklist de release',
+    createdAt: NOW - 60 * D, updatedAt: NOW - 8 * D,
+    body: "1. Atualizar versão e changelog\n2. Rodar os e2e na pilha isolada\n3. Gerar a tag `vX.Y.Z`\n4. Conferir backup do banco **e** dos anexos",
+  },
+  {
+    id: 'n7', projectId: 'port', pinned: false, tags: ['ui'],
+    title: 'Paleta e tipografia',
+    createdAt: NOW - 15 * D, updatedAt: NOW - 11 * D,
+    body: "- Fundo: `#1d1b19`\n- Destaque: `#e0895a`\n- Títulos: Inter Semibold, tracking `-0.01em`\n- Corpo: 17 px, entrelinha 1,6",
+  },
+];
+
+notes.forEach((n) => {
+  n.persisted = true;
+  n.attachments = [];
+});
+notes[0].attachments = [
+  { id: 'a1', kind: 'image', name: 'print-20261118-101522.png', url: PRINT_DF, size: 48213 },
+  { id: 'a2', kind: 'image', name: 'print-20261118-101604.png', url: PRINT_VOLUMES, size: 91022 },
+];
+notes[0].body = notes[0].body.replace('## Logs', `Antes de limpar, o que ocupa espaço:\n\n![print-20261118-101522.png](${PRINT_DF})\n\n## Logs`);
+
+const state = { section: 'notes', project: 'all', search: '', selectedId: null, editing: false, attachmentsOpen: null, raw: false, lastLang: 'bash', linkOpen: false, saving: false, confirmProject: null, conflict: null, saveError: false, simulate: null };
+let editor = null;
+let slash = null;
+let saveTimer = null;
+let holdTimer = null;
+
+const $ = (selector) => document.querySelector(selector);
+const esc = (value) => String(value).replace(/[&<>"']/g, (c) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' })[c]);
+const projectOf = (id) => PROJECTS.find((p) => p.id === id);
+const current = () => notes.find((n) => n.id === state.selectedId);
+const icons = () => lucide.createIcons();
+const cx = (...c) => c.filter(Boolean).join(' ');
+
+const relTime = (t) => {
+  const d = Date.now() - t;
+  if (d < 60e3) return 'agora';
+  if (d < H) return `há ${Math.floor(d / 60e3)} min`;
+  if (d < D) return `há ${Math.floor(d / H)} h`;
+  if (d < 2 * D) return 'ontem';
+  return new Date(t).toLocaleDateString('pt-BR', { day: 'numeric', month: 'short' });
+};
+const absTime = (t) => new Date(t).toLocaleString('pt-BR', { day: 'numeric', month: 'short', year: 'numeric', hour: '2-digit', minute: '2-digit' });
+const excerpt = (body) => body.replace(/!\[[^\]]*\]\([^)]*\)/g, ' ').replace(/```[\s\S]*?```/g, ' ').replace(/[#>*_`|\-\[\]()]/g, ' ').replace(/\s+/g, ' ').trim().slice(0, 160);
+
+const inScope = (n) => state.project === 'all' || (state.project === 'none' ? n.projectId === null : n.projectId === state.project);
+
+function filtered() {
+  const q = state.search.trim().toLowerCase();
+  return notes
+    .filter(inScope)
+    .filter((n) => !q || `${n.title} ${n.body} ${n.tags.join(' ')}`.toLowerCase().includes(q))
+    .sort((a, b) => Number(b.pinned) - Number(a.pinned) || b.updatedAt - a.updatedAt);
+}
+
+function scopeTitle() {
+  if (state.project === 'all') return 'Todas as anotações';
+  if (state.project === 'none') return 'Sem projeto';
+  return projectOf(state.project).name;
+}
+
+function renderSidebar() {
+  const inNotes = state.section === 'notes';
+  const navItem = (section, icon, label, count) => {
+    const active = state.section === section && (section === 'ideas' || state.project === 'all');
+    return `<button data-action="section" data-section="${section}" class="${cx('flex w-full items-center gap-2.5 rounded-md px-2 py-1.5 text-sm transition-colors', active ? 'bg-raised text-fg' : 'text-fg-muted hover:bg-surface hover:text-fg')}">
+      <i data-lucide="${icon}" class="size-4 shrink-0 text-fg-subtle"></i>${label}
+      <span class="ml-auto text-xs tabular-nums text-fg-subtle">${count}</span></button>`;
+  };
+  const projectItem = (id, dot, label, count) => {
+    const active = inNotes && state.project === id;
+    const deletable = id !== 'none';
+    const row = `<div class="${cx('group flex items-center rounded-md transition-colors', active ? 'bg-raised text-fg' : 'text-fg-muted hover:bg-surface hover:text-fg')}">
+      <button data-action="project" data-project="${id}" class="flex min-w-0 flex-1 items-center gap-2.5 px-2 py-1.5 text-left text-sm">
+        ${dot}<span class="truncate">${esc(label)}</span>
+        <span class="${cx('ml-auto text-xs tabular-nums text-fg-subtle', deletable && 'group-hover:hidden')}">${count || ''}</span>
+      </button>
+      ${deletable ? `<div class="hidden shrink-0 items-center pr-1 group-hover:flex">
+        <button title="Renomear" class="rounded p-1 text-fg-subtle hover:text-fg"><i data-lucide="pencil" class="size-3.5"></i></button>
+        <button data-action="ask-delete-project" data-project="${id}" title="Excluir" class="rounded p-1 text-fg-subtle hover:text-rose-400"><i data-lucide="trash-2" class="size-3.5"></i></button>
+      </div>` : ''}
+    </div>`;
+    return row + (state.confirmProject === id ? deleteProjectCard(id) : '');
+  };
+
+  const looseCount = notes.filter((n) => n.projectId === null).length;
+
+  $('#sidebar').innerHTML = `
+    <div class="flex items-center gap-2.5 px-5 pt-5 pb-6">
+      <span class="grid size-8 place-items-center rounded-lg bg-accent/15 text-accent-soft ring-1 ring-inset ring-accent/20"><i data-lucide="lightbulb" class="size-4"></i></span>
+      <span class="font-semibold tracking-tight">Brainstorm</span>
+    </div>
+    <nav class="thin flex-1 overflow-y-auto px-3">
+      <div class="space-y-0.5">
+        ${navItem('ideas', 'layers', 'Ideias', 7)}
+        ${navItem('notes', 'notebook-pen', 'Anotações', notes.length)}
+      </div>
+      <p class="mt-6 mb-1.5 px-2 text-2xs font-medium uppercase tracking-wider text-fg-subtle">Projetos</p>
+      <div class="space-y-0.5">
+        ${PROJECTS.map((p) => projectItem(p.id, `<span class="size-2.5 shrink-0 rounded-full" style="background:${p.color}"></span>`, p.name,
+          inNotes ? notes.filter((n) => n.projectId === p.id).length : p.ideas)).join('')}
+        ${inNotes ? projectItem('none', '<span class="size-2.5 shrink-0 rounded-full border border-dashed border-fg-faint"></span>', 'Sem projeto', looseCount) : ''}
+      </div>
+    </nav>
+    <div class="border-t border-line p-3">
+      <button class="flex w-full items-center gap-2 rounded-md px-2 py-1.5 text-sm text-fg-muted transition-colors hover:bg-surface hover:text-fg"><i data-lucide="plus" class="size-4"></i>Novo projeto</button>
+    </div>`;
+}
+
+function deleteProjectCard(id) {
+  const p = projectOf(id);
+  const noteCount = notes.filter((n) => n.projectId === id).length;
+  const plural = (n, one, many) => `${n} ${n === 1 ? one : many}`;
+  return `<div class="my-1.5 rounded-lg border border-rose-500/30 bg-rose-500/5 p-3">
+    <p class="text-sm font-medium text-fg">Excluir “${esc(p.name)}”?</p>
+    <p class="mt-1.5 text-xs text-fg-muted">Serão apagados junto:</p>
+    <ul class="mt-1 space-y-0.5 text-xs text-fg-soft">
+      <li class="flex items-center gap-1.5"><i data-lucide="layers" class="size-3.5 text-fg-subtle"></i>${plural(p.ideas, 'ideia', 'ideias')} e ${plural(p.attachments, 'anexo', 'anexos')}</li>
+      <li class="flex items-center gap-1.5"><i data-lucide="notebook-pen" class="size-3.5 text-fg-subtle"></i>${plural(noteCount, 'anotação', 'anotações')}</li>
+    </ul>
+    <p class="mt-2 flex items-start gap-1.5 text-xs font-medium text-rose-300"><i data-lucide="triangle-alert" class="mt-px size-3.5 shrink-0"></i>Não é possível recuperar depois.</p>
+    <div class="mt-3 space-y-1">
+      <button data-hold="delete-project" data-project="${id}" class="hold flex h-8 w-full items-center justify-center gap-1.5 whitespace-nowrap rounded-lg bg-rose-500/15 px-2.5 text-xs font-medium text-rose-300 ring-1 ring-inset ring-rose-500/30 select-none hover:bg-rose-500/20">
+        <i data-lucide="trash-2" class="size-3.5"></i><span>Segure 3 s para excluir</span>
+      </button>
+      <button data-action="cancel-delete-project" class="h-8 w-full rounded-lg text-xs font-medium text-fg-muted hover:bg-raised hover:text-fg">Cancelar</button>
+    </div>
+  </div>`;
+}
+
+function renderMain() {
+  if (state.section === 'ideas') {
+    $('#main').innerHTML = `
+      <div class="grid flex-1 place-items-center p-8">
+        <div class="flex max-w-md flex-col items-center rounded-2xl border border-dashed border-line px-8 py-16 text-center">
+          <div class="mb-4 grid size-12 place-items-center rounded-xl bg-surface text-fg-subtle"><i data-lucide="layers" class="size-5"></i></div>
+          <h3 class="font-medium text-fg-soft">A lista de ideias continua como está</h3>
+          <p class="mt-1 text-sm text-fg-subtle">Este protótipo cobre só a área de Anotações.</p>
+          <button data-action="section" data-section="notes" class="mt-6 inline-flex h-9 items-center gap-2 rounded-lg bg-raised px-3.5 text-sm font-medium ring-1 ring-inset ring-line-strong hover:bg-raised-hover">
+            <i data-lucide="notebook-pen" class="size-4"></i>Ir para Anotações</button>
+        </div>
+      </div>`;
+    return;
+  }
+  $('#main').innerHTML = `
+    <section class="flex w-[22rem] shrink-0 flex-col border-r border-line">
+      <header class="space-y-4 px-5 pt-6 pb-4">
+        <div class="flex items-start justify-between gap-3">
+          <div class="min-w-0">
+            <h1 id="list-title" class="truncate text-lg font-semibold tracking-tight"></h1>
+            <p id="list-count" class="text-sm text-fg-subtle"></p>
+          </div>
+          <button data-action="new" title="Nova anotação (N)" class="inline-flex h-9 shrink-0 items-center gap-1.5 rounded-lg bg-accent px-3 text-sm font-medium text-accent-fg shadow-sm shadow-black/20 hover:bg-accent-hover">
+            <i data-lucide="plus" class="size-4"></i>Nova
+            <kbd class="rounded bg-accent-fg/15 px-1.5 text-2xs font-semibold">N</kbd>
+          </button>
+        </div>
+        <label class="flex items-center gap-2 rounded-lg bg-surface px-3 py-2 ring-1 ring-inset ring-line focus-within:ring-accent">
+          <i data-lucide="search" class="size-4 text-fg-faint"></i>
+          <input id="search" value="${esc(state.search)}" placeholder="Buscar em título, texto e tags" class="min-w-0 flex-1 bg-transparent text-sm outline-none placeholder:text-fg-faint">
+        </label>
+      </header>
+      <div id="note-list" class="thin flex-1 space-y-0.5 overflow-y-auto px-3 pb-6"></div>
+    </section>
+    <section id="detail" class="flex min-w-0 flex-1 flex-col"></section>`;
+  renderList();
+  renderDetail();
+}
+
+function renderList() {
+  if (state.section !== 'notes') return;
+  const list = filtered();
+  $('#list-title').textContent = scopeTitle();
+  $('#list-count').textContent = `${list.length} ${list.length === 1 ? 'anotação' : 'anotações'}`;
+
+  const item = (n) => {
+    const p = projectOf(n.projectId);
+    const active = n.id === state.selectedId;
+    return `<button data-action="select" data-id="${n.id}" class="${cx('block w-full rounded-lg px-3 py-2.5 text-left transition-colors', active ? 'bg-raised' : 'hover:bg-surface')}">
+      <div class="flex items-center gap-1.5 text-2xs text-fg-subtle">
+        ${p ? `<span class="size-2 rounded-full" style="background:${p.color}"></span>${esc(p.name)}` : '<span class="size-2 rounded-full border border-dashed border-fg-faint"></span>Sem projeto'}
+        <span class="text-fg-ghost">·</span>${relTime(n.updatedAt)}
+        ${n.pinned ? '<i data-lucide="pin" class="ml-auto size-3 text-accent-soft"></i>' : ''}
+      </div>
+      <div class="${cx('mt-1 truncate text-sm font-medium', n.title ? 'text-fg' : 'text-fg-faint italic')}">${esc(n.title || 'Sem título')}</div>
+      <div class="mt-0.5 line-clamp-2 text-xs text-fg-muted">${esc(excerpt(n.body)) || '<span class="text-fg-faint">Vazia</span>'}</div>
+    </button>`;
+  };
+
+  const pinned = list.filter((n) => n.pinned);
+  const others = list.filter((n) => !n.pinned);
+  const label = (text) => `<p class="px-3 pt-3 pb-1 text-2xs font-medium uppercase tracking-wider text-fg-subtle">${text}</p>`;
+
+  $('#note-list').innerHTML = list.length === 0
+    ? `<div class="px-3 py-10 text-center text-sm text-fg-faint">${state.search ? 'Nada encontrado para essa busca.' : 'Nenhuma anotação aqui ainda.'}</div>`
+    : (pinned.length ? label('Fixadas') + pinned.map(item).join('') : '') +
+      (others.length ? (pinned.length ? label('Demais') : '') + others.map(item).join('') : '');
+  icons();
+}
+
+function renderDetail() {
+  if (state.section !== 'notes') return;
+  const n = current();
+  const el = $('#detail');
+  if (!n) {
+    el.innerHTML = `
+      <div class="grid flex-1 place-items-center p-8">
+        <div class="flex flex-col items-center text-center">
+          <div class="mb-4 grid size-12 place-items-center rounded-xl bg-surface text-fg-subtle"><i data-lucide="notebook-pen" class="size-5"></i></div>
+          <h3 class="font-medium text-fg-soft">Nenhuma anotação aberta</h3>
+          <p class="mt-1 text-sm text-fg-subtle">Escolha uma na lista ou pressione <kbd class="rounded border border-line-strong bg-raised px-1.5 text-2xs">N</kbd> para criar.</p>
+        </div>
+      </div>`;
+    icons();
+    return;
+  }
+  const p = projectOf(n.projectId);
+  const editing = state.editing;
+  const projectDot = p
+    ? `<span class="size-2.5 shrink-0 rounded-full" style="background:${p.color}"></span>`
+    : '<span class="size-2.5 shrink-0 rounded-full border border-dashed border-fg-faint"></span>';
+  const pinButton = `<button data-action="pin" class="${cx('inline-flex h-8 items-center gap-1.5 rounded-lg px-2.5 text-xs font-medium transition-colors', n.pinned ? 'bg-accent/15 text-accent-soft ring-1 ring-inset ring-accent/25' : 'text-fg-muted hover:bg-raised hover:text-fg')}">
+      <i data-lucide="pin" class="size-3.5"></i>${n.pinned ? 'Fixada' : 'Fixar'}
+    </button>`;
+  const deleteButton = `<button data-hold="delete" title="Segure 3 s para excluir" class="hold inline-flex h-8 items-center gap-1.5 rounded-lg px-2.5 text-xs font-medium text-fg-muted transition-colors select-none hover:bg-rose-500/10 hover:text-rose-400">
+      <i data-lucide="trash-2" class="size-3.5"></i><span>Segure para excluir</span>
+    </button>`;
+
+  const header = editing
+    ? `<div class="flex items-center gap-2 border-b border-line px-8 py-3">
+        <label class="relative flex h-8 items-center gap-2 rounded-lg bg-surface pl-2.5 pr-7 text-xs ring-1 ring-inset ring-line hover:ring-line-strong">
+          ${projectDot}
+          <select id="project" class="appearance-none bg-transparent font-medium text-fg-soft outline-none">
+            <option value="" ${!p ? 'selected' : ''}>Sem projeto</option>
+            ${PROJECTS.map((x) => `<option value="${x.id}" ${x.id === n.projectId ? 'selected' : ''}>${esc(x.name)}</option>`).join('')}
+          </select>
+          <i data-lucide="chevron-down" class="pointer-events-none absolute right-2 size-3.5 text-fg-faint"></i>
+        </label>
+        ${pinButton}
+        <span id="save-indicator" class="ml-auto inline-flex items-center gap-1.5 text-2xs text-fg-subtle"></span>
+        ${deleteButton}
+        <button data-action="done" title="Concluir a edição (Esc)" class="inline-flex h-8 items-center gap-1.5 rounded-lg bg-raised px-3 text-xs font-medium text-fg ring-1 ring-inset ring-line-strong hover:bg-raised-hover">
+          <i data-lucide="check" class="size-3.5"></i>Concluir
+          <kbd class="rounded bg-sunken px-1.5 text-2xs text-fg-subtle">Esc</kbd>
+        </button>
+      </div>`
+    : `<div class="flex items-center gap-2 border-b border-line px-8 py-3">
+        <span class="inline-flex h-8 items-center gap-2 pr-1 text-xs font-medium text-fg-soft">${projectDot}${p ? esc(p.name) : 'Sem projeto'}</span>
+        ${pinButton}
+        <span class="ml-auto text-2xs text-fg-subtle">Atualizada ${relTime(n.updatedAt)}</span>
+        ${deleteButton}
+        <button data-action="edit" title="Editar (E)" class="inline-flex h-8 items-center gap-1.5 rounded-lg bg-accent px-3 text-xs font-medium text-accent-fg shadow-sm shadow-black/20 hover:bg-accent-hover">
+          <i data-lucide="pencil" class="size-3.5"></i>Editar
+          <kbd class="rounded bg-accent-fg/15 px-1.5 text-2xs font-semibold">E</kbd>
+        </button>
+      </div>`;
+
+  const conflictBanner = editing && state.conflict
+    ? `<div class="flex items-start gap-3 border-b border-amber-500/30 bg-amber-500/10 px-8 py-3">
+        <i data-lucide="git-compare-arrows" class="mt-0.5 size-4 shrink-0 text-amber-300"></i>
+        <div class="min-w-0 flex-1">
+          <p class="text-sm font-medium text-amber-100">Esta anotação foi alterada em outra aba</p>
+          <p class="mt-0.5 text-xs text-amber-200/80">A outra versão foi salva às ${new Date(state.conflict.at).toLocaleTimeString('pt-BR', { hour: '2-digit', minute: '2-digit' })}. Suas últimas alterações ainda não foram salvas.</p>
+        </div>
+        <button data-action="conflict-reload" class="h-8 shrink-0 rounded-lg px-2.5 text-xs font-medium text-amber-100 hover:bg-amber-500/15">Descartar as minhas e recarregar</button>
+        <button data-action="conflict-keep" class="h-8 shrink-0 rounded-lg bg-amber-500/20 px-2.5 text-xs font-medium text-amber-50 ring-1 ring-inset ring-amber-500/40 hover:bg-amber-500/30">Manter as minhas</button>
+      </div>`
+    : '';
+
+  const title = editing
+    ? `<input id="title" value="${esc(n.title)}" placeholder="Título da anotação" maxlength="200"
+        class="w-full bg-transparent text-3xl font-semibold tracking-tight text-fg outline-none placeholder:text-fg-ghost">`
+    : `<h1 class="${cx('truncate text-3xl font-semibold tracking-tight', n.title ? 'text-fg' : 'italic text-fg-faint')}">${esc(n.title || 'Sem título')}</h1>`;
+
+  const tags = editing
+    ? `<div class="mt-3 flex shrink-0 flex-wrap items-center gap-1.5">
+        ${n.tags.map((t) => `<span class="inline-flex items-center gap-1 rounded-md bg-raised px-2 py-0.5 text-xs text-fg-soft">#${esc(t)}
+          <button data-action="untag" data-tag="${esc(t)}" class="text-fg-faint hover:text-fg"><i data-lucide="x" class="size-3"></i></button></span>`).join('')}
+        <input id="tag-input" placeholder="${n.tags.length ? '+ tag' : 'Adicionar tag'}" class="w-28 bg-transparent px-1 py-0.5 text-xs text-fg outline-none placeholder:text-fg-faint">
+      </div>`
+    : n.tags.length
+      ? `<div class="mt-3 flex shrink-0 flex-wrap gap-1.5">${n.tags.map((t) => `<span class="rounded-md bg-raised px-2 py-0.5 text-xs text-fg-soft">#${esc(t)}</span>`).join('')}</div>`
+      : '';
+
+  const content = editing && state.raw
+    ? `<textarea id="raw" spellcheck="false" class="thin block min-h-0 w-full flex-1 resize-none overflow-y-auto bg-transparent px-5 py-4 font-mono text-sm leading-relaxed text-fg outline-none">${esc(n.body)}</textarea>`
+    : `<div id="editor" class="thin min-h-0 flex-1 overflow-y-auto" ${editing ? '' : 'title="Dois cliques para editar"'}></div>`;
+
+  const hint = editing
+    ? 'Digite <b class="font-semibold text-fg-subtle">/</b> para inserir blocos · atalhos de Markdown também funcionam · Esc conclui · Ctrl+S salva na hora'
+    : '<b class="font-semibold text-fg-subtle">E</b> ou dois cliques no texto para editar · caixas de tarefa podem ser marcadas sem editar';
+
+  el.innerHTML = `
+    ${header}
+    ${conflictBanner}
+    <div class="flex min-h-0 flex-1 flex-col">
+      <div class="flex min-h-0 flex-1 flex-col px-8 pt-6 pb-4">
+        ${title}
+        ${tags}
+        <div class="${cx('mt-5 flex min-h-0 flex-1 flex-col overflow-hidden rounded-xl border bg-surface', editing ? 'border-line-strong' : 'border-line')}">
+          ${editing ? `<div id="toolbar" class="flex shrink-0 flex-wrap items-center gap-0.5 border-b border-line px-2 py-1.5">${toolbarHtml()}</div>` : ''}
+          ${content}
+          ${editing || n.attachments.length ? `<div id="attachments" class="shrink-0 border-t border-line">${attachmentsHtml(n)}</div>` : ''}
+        </div>
+        <div class="mt-3 flex shrink-0 flex-wrap items-center justify-between gap-2 text-2xs text-fg-faint">
+          <span id="meta">Criada ${absTime(n.createdAt)} · Atualizada ${absTime(n.updatedAt)}</span>
+          <span>${hint}</span>
+        </div>
+      </div>
+    </div>`;
+
+  updateIndicator();
+  icons();
+  if (!(editing && state.raw)) mountEditor(n);
+}
+
+function enterEdit(point) {
+  const n = current();
+  if (!n || state.editing) return;
+  const before = $('#editor');
+  const scroll = before?.scrollTop ?? 0;
+  const top = before?.getBoundingClientRect().top ?? 0;
+  state.editing = true;
+  renderDetail();
+  const after = $('#editor');
+  if (!editor || !after) return;
+  after.scrollTop = scroll;
+  const pos = point ? editor.view.posAtCoords({ left: point.x, top: point.y + (after.getBoundingClientRect().top - top) })?.pos : null;
+  editor.chain().focus(pos ?? 'end').run();
+}
+
+function exitEdit() {
+  if (!state.editing) return;
+  flush();
+  const n = current();
+  state.editing = false;
+  state.raw = false;
+  state.linkOpen = false;
+  if (n && !n.persisted) {
+    discardIfEmpty();
+    state.selectedId = filtered()[0]?.id ?? null;
+    renderAll();
+    return;
+  }
+  renderDetail();
+}
+
+function copyText(text) {
+  if (navigator.clipboard?.writeText && window.isSecureContext) return navigator.clipboard.writeText(text);
+  const area = document.createElement('textarea');
+  area.value = text;
+  area.style.position = 'fixed';
+  area.style.opacity = '0';
+  document.body.append(area);
+  area.select();
+  document.execCommand('copy');
+  area.remove();
+  return Promise.resolve();
+}
+
+const LANGS = [
+  ['plaintext', 'Texto simples'], ['bash', 'Bash / Terminal'], ['sql', 'SQL'], ['json', 'JSON'], ['yaml', 'YAML'],
+  ['xml', 'XML / HTML'], ['java', 'Java'], ['kotlin', 'Kotlin'], ['typescript', 'TypeScript'], ['javascript', 'JavaScript'],
+  ['python', 'Python'], ['rust', 'Rust'], ['go', 'Go'], ['c', 'C'], ['cpp', 'C++'], ['css', 'CSS'], ['ini', 'INI / .env'], ['diff', 'Diff'],
+];
+
+const SLASH_ITEMS = [
+  { label: 'Título grande', hint: '#', icon: 'heading-1', keys: 'titulo h1 cabecalho', run: (c) => c.setHeading({ level: 1 }) },
+  { label: 'Título médio', hint: '##', icon: 'heading-2', keys: 'titulo h2 subtitulo', run: (c) => c.setHeading({ level: 2 }) },
+  { label: 'Título pequeno', hint: '###', icon: 'heading-3', keys: 'titulo h3', run: (c) => c.setHeading({ level: 3 }) },
+  { label: 'Lista', hint: '-', icon: 'list', keys: 'lista marcadores bullet', run: (c) => c.toggleBulletList() },
+  { label: 'Lista numerada', hint: '1.', icon: 'list-ordered', keys: 'lista numerada passos', run: (c) => c.toggleOrderedList() },
+  { label: 'Lista de tarefas', hint: '[ ]', icon: 'list-checks', keys: 'tarefas checklist todo', run: (c) => c.toggleTaskList() },
+  { label: 'Citação / destaque', hint: '>', icon: 'text-quote', keys: 'citacao destaque aviso quote', run: (c) => c.toggleBlockquote() },
+  { label: 'Bloco de código', hint: '```', icon: 'square-code', keys: 'codigo comando terminal bash sql script', run: (c) => c.setCodeBlock({ language: state.lastLang }) },
+  { label: 'Tabela', icon: 'table', keys: 'tabela grade colunas', run: (c) => c.insertTable({ rows: 3, cols: 3, withHeaderRow: true }) },
+  { label: 'Linha divisória', hint: '---', icon: 'minus', keys: 'divisor linha separador', run: (c) => c.setHorizontalRule() },
+];
+
+const COMMANDS = {
+  bold: (c) => c.toggleBold(),
+  italic: (c) => c.toggleItalic(),
+  strike: (c) => c.toggleStrike(),
+  code: (c) => c.toggleCode(),
+  bullet: (c) => c.toggleBulletList(),
+  ordered: (c) => c.toggleOrderedList(),
+  task: (c) => c.toggleTaskList(),
+  quote: (c) => c.toggleBlockquote(),
+  codeblock: (c) => c.toggleCodeBlock({ language: state.lastLang }),
+  table: (c) => c.insertTable({ rows: 3, cols: 3, withHeaderRow: true }),
+  hr: (c) => c.setHorizontalRule(),
+  undo: (c) => c.undo(),
+  redo: (c) => c.redo(),
+  addRow: (c) => c.addRowAfter(),
+  addCol: (c) => c.addColumnAfter(),
+  delRow: (c) => c.deleteRow(),
+  delCol: (c) => c.deleteColumn(),
+  delTable: (c) => c.deleteTable(),
+};
+
+const ACTIVE = {
+  bold: 'bold', italic: 'italic', strike: 'strike', code: 'code', link: 'link',
+  bullet: 'bulletList', ordered: 'orderedList', task: 'taskList', quote: 'blockquote', codeblock: 'codeBlock',
+};
+
+const toolButton = (cmd, icon, title) =>
+  `<button type="button" data-cmd="${cmd}" title="${title}" class="inline-flex size-8 items-center justify-center rounded-md text-fg-muted transition-colors hover:bg-raised hover:text-fg disabled:pointer-events-none disabled:opacity-30"><i data-lucide="${icon}" class="size-4"></i></button>`;
+const toolSep = '<span class="mx-1 h-5 w-px bg-line"></span>';
+
+function toolbarHtml() {
+  const group = (html) => (state.raw ? html.replaceAll('<button ', '<button disabled ') : html);
+  return `
+    <label class="relative mr-1 flex h-8 items-center rounded-md hover:bg-raised">
+      <select id="block-type" ${state.raw ? 'disabled' : ''} title="Tipo de parágrafo" class="h-8 appearance-none bg-transparent pr-6 pl-2.5 text-xs font-medium text-fg-soft outline-none disabled:opacity-30">
+        <option value="p">Texto</option><option value="h1">Título grande</option><option value="h2">Título médio</option><option value="h3">Título pequeno</option>
+      </select>
+      <i data-lucide="chevron-down" class="pointer-events-none absolute right-1.5 size-3.5 text-fg-faint"></i>
+    </label>
+    ${toolSep}
+    ${group(toolButton('bold', 'bold', 'Negrito (Ctrl+B)') + toolButton('italic', 'italic', 'Itálico (Ctrl+I)') + toolButton('strike', 'strikethrough', 'Riscado') + toolButton('code', 'code', 'Código na linha') + toolButton('link', 'link', 'Link (Ctrl+K)'))}
+    ${toolSep}
+    ${group(toolButton('bullet', 'list', 'Lista') + toolButton('ordered', 'list-ordered', 'Lista numerada') + toolButton('task', 'list-checks', 'Lista de tarefas'))}
+    ${toolSep}
+    ${group(toolButton('quote', 'text-quote', 'Citação') + toolButton('codeblock', 'square-code', 'Bloco de código') + toolButton('table', 'table', 'Tabela') + toolButton('hr', 'minus', 'Linha divisória') + toolButton('image', 'image-plus', 'Imagem no texto'))}
+    <div id="tb-context" class="ml-1 flex items-center gap-1"></div>
+    <div class="ml-auto flex items-center gap-0.5">
+      ${group(toolButton('undo', 'undo-2', 'Desfazer (Ctrl+Z)') + toolButton('redo', 'redo-2', 'Refazer (Ctrl+Shift+Z)'))}
+      ${toolSep}
+      <button type="button" data-action="toggle-raw" title="${state.raw ? 'Voltar ao editor visual' : 'Ver e editar o Markdown'}" class="${cx('inline-flex h-8 items-center gap-1.5 rounded-md px-2.5 text-xs font-medium transition-colors', state.raw ? 'bg-accent/15 text-accent-soft ring-1 ring-inset ring-accent/25' : 'text-fg-muted hover:bg-raised hover:text-fg')}">
+        <i data-lucide="file-code-2" class="size-4"></i>Markdown
+      </button>
+    </div>`;
+}
+
+const langLabel = (language) => (language && language !== 'plaintext' ? (LANGS.find(([id]) => id === language)?.[1] ?? language) : '');
+
+const PrettyCodeBlock = CodeBlockLowlight.extend({
+  renderHTML({ node, HTMLAttributes }) {
+    const language = node.attrs.language;
+    return ['pre', { ...HTMLAttributes, 'data-lang': langLabel(language) }, ['code', { class: language ? `language-${language}` : null }, 0]];
+  },
+  addNodeView() {
+    return ({ node }) => {
+      let currentNode = node;
+      const dom = document.createElement('pre');
+      const code = document.createElement('code');
+      const copy = document.createElement('button');
+      const apply = (target) => {
+        dom.dataset.lang = langLabel(target.attrs.language);
+        code.className = target.attrs.language ? `language-${target.attrs.language}` : '';
+      };
+      copy.type = 'button';
+      copy.contentEditable = 'false';
+      copy.className = 'copy-code';
+      copy.textContent = 'Copiar';
+      copy.addEventListener('mousedown', (event) => event.preventDefault());
+      copy.addEventListener('click', () => {
+        copyText(currentNode.textContent).then(() => {
+          copy.textContent = 'Copiado';
+          setTimeout(() => (copy.textContent = 'Copiar'), 1200);
+        });
+      });
+      apply(node);
+      dom.append(copy, code);
+      return {
+        dom,
+        contentDOM: code,
+        update(updated) {
+          if (updated.type !== currentNode.type) return false;
+          currentNode = updated;
+          apply(updated);
+          return true;
+        },
+        stopEvent: (event) => copy.contains(event.target),
+        ignoreMutation: (mutation) => copy.contains(mutation.target) || (mutation.type === 'attributes' && (mutation.target === dom || mutation.target === code)),
+      };
+    };
+  },
+});
+
+function mountEditor(n) {
+  editor?.destroy();
+  editor = null;
+  closeSlash();
+  const element = $('#editor');
+  if (!element) return;
+  editor = new Editor({
+    element,
+    editable: state.editing,
+    extensions: [
+      StarterKit.configure({ codeBlock: false, link: { openOnClick: !state.editing, autolink: true, defaultProtocol: 'https' } }),
+      PrettyCodeBlock.configure({ lowlight, defaultLanguage: 'plaintext' }),
+      TableKit.configure({ table: { resizable: false } }),
+      TaskList,
+      TaskItem.configure({ nested: true, onReadOnlyChecked: () => true }),
+      Image.configure({ allowBase64: true }),
+      Placeholder.configure({
+        showOnlyWhenEditable: false,
+        placeholder: state.editing ? 'Escreva aqui… ou digite / para inserir título, lista, tabela ou bloco de código' : 'Nada escrito ainda. Pressione E para escrever.',
+      }),
+      Markdown,
+    ],
+    content: n.body,
+    contentType: 'markdown',
+    editorProps: {
+      attributes: { class: 'md' },
+      handleKeyDown: (_view, event) => handleEditorKey(event),
+      handlePaste: (_view, event) => {
+        const files = mediaFiles(event.clipboardData, true);
+        if (!files.length) return false;
+        event.preventDefault();
+        insertImages(files);
+        return true;
+      },
+      handleDrop: (view, event, _slice, moved) => {
+        if (moved) return false;
+        const files = mediaFiles(event.dataTransfer, true);
+        if (!files.length) return false;
+        event.preventDefault();
+        insertImages(files, view.posAtCoords({ left: event.clientX, top: event.clientY })?.pos);
+        return true;
+      },
+    },
+    onUpdate: ({ editor: instance }) => {
+      const note = current();
+      if (!note) return;
+      checkSlash();
+      const markdown = instance.getMarkdown().replace(/(\s*&nbsp;\s*)+$/, '').trimEnd();
+      if (markdown === note.body.trimEnd()) return;
+      note.body = markdown;
+      markDirty();
+    },
+    onSelectionUpdate: () => {
+      syncToolbar();
+      checkSlash();
+    },
+    onTransaction: () => syncToolbar(),
+    onBlur: () => setTimeout(closeSlash, 150),
+  });
+  syncToolbar();
+}
+
+function syncToolbar() {
+  if (!editor) return;
+  document.querySelectorAll('#toolbar [data-cmd]').forEach((button) => {
+    const name = ACTIVE[button.dataset.cmd];
+    const active = Boolean(name && editor.isActive(name));
+    button.classList.toggle('bg-raised-hover', active);
+    button.classList.toggle('text-accent-soft', active);
+  });
+  const blockType = $('#block-type');
+  if (blockType) {
+    const level = [1, 2, 3].find((l) => editor.isActive('heading', { level: l }));
+    blockType.value = level ? `h${level}` : 'p';
+  }
+  renderContext();
+}
+
+function renderContext() {
+  const box = $('#tb-context');
+  if (!box || !editor) return;
+  let html = '';
+  if (state.linkOpen) {
+    html = `<input id="link-input" value="${esc(editor.getAttributes('link').href ?? '')}" placeholder="Cole o endereço e Enter (vazio remove)" class="h-8 w-72 rounded-md bg-sunken px-2.5 text-xs text-fg outline-none ring-1 ring-inset ring-accent placeholder:text-fg-faint">`;
+  } else if (editor.isActive('codeBlock')) {
+    const language = editor.getAttributes('codeBlock').language ?? 'plaintext';
+    html = `<span class="text-2xs text-fg-subtle">Linguagem</span>
+      <label class="relative flex h-8 items-center rounded-md bg-sunken ring-1 ring-inset ring-line">
+        <select id="code-lang" class="h-8 appearance-none bg-transparent pr-6 pl-2.5 text-xs font-medium text-fg-soft outline-none">
+          ${LANGS.map(([id, label]) => `<option value="${id}" ${id === language ? 'selected' : ''}>${label}</option>`).join('')}
+        </select>
+        <i data-lucide="chevron-down" class="pointer-events-none absolute right-1.5 size-3.5 text-fg-faint"></i>
+      </label>`;
+  } else if (editor.isActive('table')) {
+    const text = (cmd, label, danger) => `<button type="button" data-cmd="${cmd}" class="${cx('h-7 rounded-md px-2 text-2xs font-medium ring-1 ring-inset ring-line transition-colors', danger ? 'text-fg-muted hover:bg-rose-500/10 hover:text-rose-400' : 'text-fg-soft hover:bg-raised')}">${label}</button>`;
+    html = text('addRow', '+ Linha') + text('addCol', '+ Coluna') + text('delRow', '− Linha') + text('delCol', '− Coluna') + text('delTable', 'Excluir tabela', true);
+  }
+  if (box.dataset.html === html) return;
+  box.dataset.html = html;
+  box.innerHTML = html;
+  icons();
+  if (state.linkOpen) $('#link-input')?.focus();
+}
+
+const normalize = (value) => value.normalize('NFD').replace(/[̀-ͯ]/g, '').toLowerCase();
+
+function checkSlash() {
+  if (!editor) return closeSlash();
+  const { $from, empty } = editor.state.selection;
+  if (!empty || $from.parent.type.name !== 'paragraph') return closeSlash();
+  const before = $from.parent.textBetween(0, $from.parentOffset, '\n', '\0');
+  const match = /^\/([\p{L}\d ]{0,24})$/u.exec(before);
+  if (!match) return closeSlash();
+  const query = normalize(match[1].trim());
+  const items = SLASH_ITEMS.filter((item) => !query || normalize(`${item.label} ${item.keys}`).includes(query));
+  if (!items.length) return closeSlash();
+  const index = slash && slash.query === query ? Math.min(slash.index, items.length - 1) : 0;
+  slash = { from: $from.start(), to: $from.pos, query, items, index };
+  renderSlash();
+}
+
+function renderSlash() {
+  const menu = $('#slash');
+  const coords = editor.view.coordsAtPos(slash.from);
+  menu.innerHTML = '<p class="px-2.5 pt-1.5 pb-1 text-2xs font-medium uppercase tracking-wider text-fg-subtle">Inserir</p>' +
+    slash.items.map((item, i) => `<button type="button" data-slash="${i}" class="${cx('flex w-full items-center gap-2.5 rounded-lg px-2.5 py-1.5 text-left text-sm', i === slash.index ? 'bg-raised-hover text-fg' : 'text-fg-soft hover:bg-raised-hover')}">
+      <span class="grid size-7 place-items-center rounded-md bg-surface ring-1 ring-inset ring-line"><i data-lucide="${item.icon}" class="size-4 text-fg-muted"></i></span>
+      <span class="flex-1">${item.label}</span>
+      ${item.hint ? `<kbd class="font-mono text-2xs text-fg-faint">${esc(item.hint)}</kbd>` : ''}
+    </button>`).join('');
+  const height = Math.min(slash.items.length * 40 + 30, 440);
+  menu.style.left = `${coords.left}px`;
+  menu.style.top = `${Math.min(coords.bottom + 6, window.innerHeight - 16 - height)}px`;
+  menu.classList.remove('hidden');
+  icons();
+}
+
+function closeSlash() {
+  slash = null;
+  $('#slash')?.classList.add('hidden');
+}
+
+function chooseSlash(i) {
+  if (!slash || !editor) return;
+  const item = slash.items[i];
+  const range = { from: slash.from, to: slash.to };
+  closeSlash();
+  item.run(editor.chain().focus().deleteRange(range)).run();
+}
+
+function handleEditorKey(event) {
+  if ((event.ctrlKey || event.metaKey) && event.key.toLowerCase() === 'k') {
+    state.linkOpen = true;
+    renderContext();
+    return true;
+  }
+  if (!slash) {
+    if (event.key === 'Escape') {
+      exitEdit();
+      return true;
+    }
+    return false;
+  }
+  if (event.key === 'ArrowDown' || event.key === 'ArrowUp') {
+    const step = event.key === 'ArrowDown' ? 1 : -1;
+    slash.index = (slash.index + step + slash.items.length) % slash.items.length;
+    renderSlash();
+    return true;
+  }
+  if (event.key === 'Enter' || event.key === 'Tab') {
+    chooseSlash(slash.index);
+    return true;
+  }
+  if (event.key === 'Escape') {
+    closeSlash();
+    return true;
+  }
+  return false;
+}
+
+const ACCEPTED = ['image/png', 'image/jpeg', 'image/gif', 'image/webp', 'video/webm', 'video/mp4'];
+
+function mediaFiles(transfer, imagesOnly) {
+  return [...(transfer?.files ?? [])].filter((file) => ACCEPTED.includes(file.type) && (!imagesOnly || file.type.startsWith('image/')));
+}
+
+function printName(file) {
+  if (file.name && file.name !== 'image.png') return file.name;
+  const d = new Date();
+  const pad = (v) => String(v).padStart(2, '0');
+  return `print-${d.getFullYear()}${pad(d.getMonth() + 1)}${pad(d.getDate())}-${pad(d.getHours())}${pad(d.getMinutes())}${pad(d.getSeconds())}.png`;
+}
+
+function addAttachment(file) {
+  const n = current();
+  if (!n) return null;
+  const attachment = {
+    id: `a${Date.now().toString(36)}${Math.random().toString(36).slice(2, 6)}`,
+    kind: file.type.startsWith('video/') ? 'video' : 'image',
+    name: printName(file),
+    url: URL.createObjectURL(file),
+    size: file.size,
+    uploading: true,
+  };
+  n.attachments.push(attachment);
+  n.persisted = true;
+  if (state.attachmentsOpen === false) state.attachmentsOpen = true;
+  renderAttachments();
+  renderList();
+  setTimeout(() => {
+    attachment.uploading = false;
+    renderAttachments();
+  }, 800);
+  return attachment;
+}
+
+function insertImages(files, position) {
+  if (!editor) return;
+  files.forEach((file) => {
+    const attachment = addAttachment(file);
+    if (!attachment) return;
+    const node = { type: 'image', attrs: { src: attachment.url, alt: attachment.name } };
+    const chain = editor.chain().focus();
+    (position == null ? chain.insertContent(node) : chain.insertContentAt(position, node)).run();
+  });
+}
+
+function removeAttachment(id) {
+  const n = current();
+  const attachment = n?.attachments.find((a) => a.id === id);
+  if (!attachment) return;
+  n.attachments = n.attachments.filter((a) => a.id !== id);
+  if (editor) {
+    const positions = [];
+    editor.state.doc.descendants((node, pos) => {
+      if (node.type.name === 'image' && node.attrs.src === attachment.url) positions.push(pos);
+    });
+    if (positions.length) {
+      const tr = editor.state.tr;
+      positions.reverse().forEach((pos) => tr.delete(pos, pos + 1));
+      editor.view.dispatch(tr);
+    }
+  } else {
+    n.body = n.body.split('\n').filter((line) => !line.includes(attachment.url)).join('\n');
+    const raw = $('#raw');
+    if (raw) raw.value = n.body;
+    markDirty();
+  }
+  renderAttachments();
+}
+
+function attachmentsHtml(n) {
+  const open = state.attachmentsOpen ?? n.attachments.length > 0;
+  const inText = (a) => n.body.includes(a.url);
+  const head = `<div class="flex items-center gap-2 px-4 py-2">
+    <button type="button" data-action="toggle-attachments" class="flex items-center gap-2 text-xs font-medium text-fg-muted hover:text-fg">
+      <i data-lucide="paperclip" class="size-3.5"></i>Anexos
+      <span class="tabular-nums text-fg-subtle">${n.attachments.length}</span>
+      <i data-lucide="${open ? 'chevron-down' : 'chevron-up'}" class="size-3.5 text-fg-faint"></i>
+    </button>
+    ${state.editing ? '<span class="ml-auto text-2xs text-fg-faint">Ctrl+V dentro do texto insere a imagem ali · fora do texto só anexa</span>' : ''}
+  </div>`;
+  if (!open) return head;
+
+  const tile = (a) => `<div class="group relative h-24 w-40 shrink-0 overflow-hidden rounded-lg border border-line bg-sunken" title="${esc(a.name)}">
+    ${a.kind === 'video' ? `<video src="${a.url}" muted class="size-full object-cover"></video>` : `<img src="${a.url}" alt="" class="size-full object-cover object-left-top">`}
+    ${a.kind === 'video' ? '<span class="absolute top-1.5 right-1.5 grid size-6 place-items-center rounded-full bg-black/70"><i data-lucide="play" class="size-3 text-fg"></i></span>' : ''}
+    ${inText(a) ? '<span class="absolute top-1.5 left-1.5 inline-flex items-center gap-1 rounded bg-black/75 px-1.5 py-0.5 text-2xs font-medium text-accent-soft"><i data-lucide="pilcrow" class="size-3"></i>No texto</span>' : ''}
+    <div class="absolute inset-x-0 bottom-0 truncate bg-gradient-to-t from-black/85 to-transparent px-2 pt-5 pb-1 text-2xs text-fg-soft">${esc(a.name)}</div>
+    ${a.uploading ? '<div class="absolute inset-0 grid place-items-center bg-black/65 text-2xs text-fg-soft"><span class="inline-flex items-center gap-1.5"><i data-lucide="loader-circle" class="size-3.5 animate-spin"></i>Enviando…</span></div>' : `
+    <div class="absolute inset-0 hidden items-center justify-center gap-1 bg-black/65 group-hover:flex">
+      ${a.kind === 'image' && state.editing && !state.raw ? `<button type="button" data-action="insert-attachment" data-id="${a.id}" title="Inserir no texto, onde está o cursor" class="inline-flex h-7 items-center gap-1 rounded-md bg-accent px-2 text-2xs font-semibold text-accent-fg hover:bg-accent-hover"><i data-lucide="text-cursor-input" class="size-3.5"></i>No texto</button>` : ''}
+      <button type="button" data-action="view-attachment" data-id="${a.id}" title="Ver em tela cheia" class="grid size-7 place-items-center rounded-md bg-raised text-fg-soft hover:bg-raised-hover"><i data-lucide="maximize-2" class="size-3.5"></i></button>
+      ${state.editing ? `<button type="button" data-hold="delete-attachment" data-id="${a.id}" title="Segure 3 s para remover${inText(a) ? ' (sai do texto também)' : ''}" class="hold grid size-7 place-items-center rounded-md bg-raised text-fg-soft select-none hover:text-rose-400"><i data-lucide="trash-2" class="size-3.5"></i></button>` : ''}
+    </div>`}
+  </div>`;
+
+  const add = `<button type="button" data-action="pick-attachment" class="grid h-24 w-40 shrink-0 place-items-center rounded-lg border border-dashed border-line-strong text-fg-subtle transition-colors hover:border-accent hover:text-accent-soft">
+    <span class="flex flex-col items-center gap-1 text-center text-2xs"><i data-lucide="upload" class="size-4"></i>Arraste ou clique<span class="text-fg-faint">PNG · JPG · GIF · WEBP · WEBM · MP4</span></span>
+  </button>`;
+
+  return `${head}<div class="thin flex gap-3 overflow-x-auto px-4 pb-3">${n.attachments.map(tile).join('')}${state.editing ? add : ''}</div>`;
+}
+
+function renderAttachments() {
+  const element = $('#attachments');
+  const n = current();
+  if (!element || !n) return;
+  element.innerHTML = attachmentsHtml(n);
+  icons();
+}
+
+function openLightbox(id) {
+  const attachment = current()?.attachments.find((a) => a.id === id);
+  if (!attachment) return;
+  const box = $('#lightbox');
+  box.innerHTML = `<div class="flex max-h-full max-w-full flex-col items-center gap-3">
+    ${attachment.kind === 'video' ? `<video src="${attachment.url}" controls autoplay class="max-h-[80vh] max-w-full rounded-lg"></video>` : `<img src="${attachment.url}" alt="" class="max-h-[80vh] max-w-full rounded-lg">`}
+    <p class="text-xs text-fg-muted">${esc(attachment.name)} · Esc fecha</p>
+  </div>`;
+  box.classList.remove('hidden');
+  box.classList.add('flex');
+}
+
+function closeLightbox() {
+  const box = $('#lightbox');
+  box.classList.add('hidden');
+  box.classList.remove('flex');
+  box.innerHTML = '';
+}
+
+function updateIndicator() {
+  const el = $('#save-indicator');
+  if (!el) return;
+  const n = current();
+  const draft = n && !n.persisted;
+  if (state.conflict) {
+    el.innerHTML = '<i data-lucide="circle-alert" class="size-3.5 text-amber-300"></i><span class="text-amber-200">Não salvo: conflito</span>';
+  } else if (state.saveError) {
+    el.innerHTML = '<i data-lucide="cloud-off" class="size-3.5 text-rose-400"></i><span class="text-rose-300">Não foi possível salvar</span><button data-action="retry-save" class="ml-1 rounded px-1.5 py-0.5 font-medium text-fg-soft ring-1 ring-inset ring-line-strong hover:bg-raised">Tentar de novo</button>';
+  } else if (draft) {
+    el.innerHTML = '<i data-lucide="file-pen-line" class="size-3.5"></i>Rascunho · salva quando tiver conteúdo';
+  } else if (state.saving) {
+    el.innerHTML = '<i data-lucide="loader-circle" class="size-3.5 animate-spin"></i>Salvando…';
+  } else {
+    el.innerHTML = '<i data-lucide="check" class="size-3.5 text-emerald-400"></i>Salvo';
+  }
+  icons();
+}
+
+function markDirty() {
+  const n = current();
+  if (n && !n.persisted && (n.title.trim() || n.body.trim() || n.tags.length)) n.persisted = true;
+  if (state.conflict) return;
+  state.saving = true;
+  updateIndicator();
+  clearTimeout(saveTimer);
+  saveTimer = setTimeout(flush, 700);
+}
+
+function flush() {
+  clearTimeout(saveTimer);
+  const n = current();
+  if (state.conflict) return;
+  if (state.simulate === 'conflict' && state.saving) {
+    state.simulate = null;
+    state.saving = false;
+    state.conflict = { at: Date.now() - 90e3, body: `${n.body}\n\n_Linha adicionada na outra aba._` };
+    renderDetail();
+    return;
+  }
+  if (state.simulate === 'error' && state.saving) {
+    state.simulate = null;
+    state.saving = false;
+    state.saveError = true;
+    updateIndicator();
+    return;
+  }
+  if (n && state.saving) n.updatedAt = Date.now();
+  state.saving = false;
+  updateIndicator();
+  renderList();
+  renderAttachments();
+  const meta = $('#meta');
+  if (n && meta) meta.textContent = `Criada ${absTime(n.createdAt)} · Atualizada ${absTime(n.updatedAt)}`;
+}
+
+function discardIfEmpty() {
+  const n = current();
+  if (n && !n.persisted) notes = notes.filter((x) => x.id !== n.id);
+  state.conflict = null;
+  state.saveError = false;
+}
+
+function select(id) {
+  if (id === state.selectedId) return;
+  flush();
+  discardIfEmpty();
+  state.selectedId = id;
+  state.linkOpen = false;
+  state.editing = false;
+  state.raw = false;
+  state.attachmentsOpen = null;
+  renderSidebar();
+  renderList();
+  renderDetail();
+  icons();
+}
+
+function newNote() {
+  if (state.section !== 'notes') state.section = 'notes';
+  flush();
+  discardIfEmpty();
+  const projectId = state.project !== 'all' && state.project !== 'none' ? state.project : null;
+  const note = { id: `n${Date.now().toString(36)}${Math.random().toString(36).slice(2, 7)}`, persisted: false, projectId, pinned: false, tags: [], attachments: [], title: '', body: '', createdAt: Date.now(), updatedAt: Date.now() };
+  notes.unshift(note);
+  state.selectedId = note.id;
+  state.search = '';
+  state.linkOpen = false;
+  state.editing = true;
+  renderAll();
+  $('#title').focus();
+}
+
+function renderAll() {
+  renderSidebar();
+  renderMain();
+  icons();
+}
+
+function addTag(raw) {
+  const n = current();
+  const tag = raw.trim().toLowerCase().replace(/^#/, '');
+  if (!n || !tag || n.tags.includes(tag) || n.tags.length >= 20) return;
+  n.tags.push(tag);
+  markDirty();
+  renderDetail();
+  $('#tag-input').focus();
+}
+
+document.addEventListener('click', (event) => {
+  const target = event.target.closest('[data-action]');
+  if (!target) return;
+  const { action } = target.dataset;
+  if (action === 'section') {
+    flush();
+    discardIfEmpty();
+    state.editing = false;
+    state.section = target.dataset.section;
+    state.project = 'all';
+    state.search = '';
+    if (state.section === 'notes' && !current()) state.selectedId = filtered()[0]?.id ?? null;
+    renderAll();
+  } else if (action === 'project') {
+    flush();
+    discardIfEmpty();
+    state.editing = false;
+    state.project = target.dataset.project;
+    state.search = '';
+    if (!current() || !inScope(current())) state.selectedId = filtered()[0]?.id ?? null;
+    renderAll();
+  } else if (action === 'select') {
+    select(target.dataset.id);
+  } else if (action === 'new') {
+    newNote();
+  } else if (action === 'edit') {
+    enterEdit();
+  } else if (action === 'done') {
+    exitEdit();
+  } else if (action === 'toggle-raw') {
+    state.raw = !state.raw;
+    state.linkOpen = false;
+    if (state.raw) {
+      editor?.destroy();
+      editor = null;
+    }
+    renderDetail();
+    if (state.raw) $('#raw').focus();
+    else editor?.commands.focus();
+  } else if (action === 'pin') {
+    current().pinned = !current().pinned;
+    markDirty();
+    renderDetail();
+    renderList();
+  } else if (action === 'ask-delete-project') {
+    state.confirmProject = state.confirmProject === target.dataset.project ? null : target.dataset.project;
+    renderSidebar();
+    icons();
+  } else if (action === 'cancel-delete-project') {
+    state.confirmProject = null;
+    renderSidebar();
+    icons();
+  } else if (action === 'conflict-reload') {
+    current().body = state.conflict.body;
+    current().updatedAt = state.conflict.at;
+    state.conflict = null;
+    renderDetail();
+    renderList();
+  } else if (action === 'conflict-keep') {
+    state.conflict = null;
+    markDirty();
+    renderDetail();
+  } else if (action === 'retry-save') {
+    state.saveError = false;
+    markDirty();
+  } else if (action === 'simulate') {
+    state.simulate = target.dataset.kind;
+    document.querySelectorAll('[data-action="simulate"]').forEach((b) => b.classList.toggle('ring-accent', b === target));
+    $('#sim-hint').textContent = 'Agora edite a anotação aberta: o próximo salvamento vai simular o problema.';
+  } else if (action === 'toggle-attachments') {
+    state.attachmentsOpen = !(state.attachmentsOpen ?? current().attachments.length > 0);
+    renderAttachments();
+  } else if (action === 'pick-attachment') {
+    $('#file-attach').click();
+  } else if (action === 'insert-attachment') {
+    const attachment = current().attachments.find((a) => a.id === target.dataset.id);
+    if (editor && attachment) editor.chain().focus().setImage({ src: attachment.url, alt: attachment.name }).run();
+  } else if (action === 'view-attachment') {
+    openLightbox(target.dataset.id);
+  } else if (action === 'close-lightbox') {
+    closeLightbox();
+  } else if (action === 'untag') {
+    const n = current();
+    n.tags = n.tags.filter((t) => t !== target.dataset.tag);
+    markDirty();
+    renderDetail();
+  }
+});
+
+document.addEventListener('click', (event) => {
+  const slashButton = event.target.closest('[data-slash]');
+  if (slashButton) {
+    chooseSlash(Number(slashButton.dataset.slash));
+    return;
+  }
+  const button = event.target.closest('[data-cmd]');
+  if (!button || !editor) return;
+  const { cmd } = button.dataset;
+  if (cmd === 'image') {
+    $('#file-inline').click();
+    return;
+  }
+  if (cmd === 'link') {
+    state.linkOpen = !state.linkOpen;
+    renderContext();
+    return;
+  }
+  COMMANDS[cmd](editor.chain().focus()).run();
+});
+
+document.addEventListener('dblclick', (event) => {
+  if (state.editing || !event.target.closest('#editor')) return;
+  if (event.target.closest('.copy-code, input[type="checkbox"]')) return;
+  enterEdit({ x: event.clientX, y: event.clientY });
+});
+
+document.addEventListener('mousedown', (event) => {
+  if (event.target.closest('[data-slash]')) event.preventDefault();
+});
+
+document.addEventListener('input', (event) => {
+  const n = current();
+  const { id } = event.target;
+  if (id === 'search') {
+    state.search = event.target.value;
+    renderList();
+  } else if (id === 'title' && n) {
+    n.title = event.target.value;
+    markDirty();
+  } else if (id === 'raw' && n) {
+    n.body = event.target.value;
+    markDirty();
+  }
+});
+
+document.addEventListener('change', (event) => {
+  if (event.target.id === 'file-inline' || event.target.id === 'file-attach') {
+    const files = [...event.target.files];
+    if (event.target.id === 'file-inline') insertImages(files);
+    else files.forEach(addAttachment);
+    event.target.value = '';
+    return;
+  }
+  if (event.target.id === 'block-type' && editor) {
+    const value = event.target.value;
+    const chain = editor.chain().focus();
+    (value === 'p' ? chain.setParagraph() : chain.setHeading({ level: Number(value.slice(1)) })).run();
+    return;
+  }
+  if (event.target.id === 'code-lang' && editor) {
+    state.lastLang = event.target.value;
+    editor.chain().focus().updateAttributes('codeBlock', { language: event.target.value }).run();
+    return;
+  }
+  if (event.target.id !== 'project') return;
+  current().projectId = event.target.value || null;
+  markDirty();
+  renderSidebar();
+  renderDetail();
+  icons();
+});
+
+document.addEventListener('paste', (event) => {
+  if (state.section !== 'notes' || !current()) return;
+  if (event.target.closest?.('.ProseMirror, input, textarea')) return;
+  const files = mediaFiles(event.clipboardData, false);
+  if (!files.length) return;
+  event.preventDefault();
+  files.forEach(addAttachment);
+});
+
+document.addEventListener('dragover', (event) => {
+  if (event.dataTransfer?.types.includes('Files')) event.preventDefault();
+});
+
+document.addEventListener('drop', (event) => {
+  if (event.target.closest?.('.ProseMirror')) return;
+  event.preventDefault();
+  if (!event.target.closest?.('#attachments') || !current()) return;
+  mediaFiles(event.dataTransfer, false).forEach(addAttachment);
+});
+
+document.addEventListener('keydown', (event) => {
+  if (event.key === 'Escape' && !$('#lightbox').classList.contains('hidden')) {
+    closeLightbox();
+    return;
+  }
+  const typing = event.target.closest('input, textarea, select, [contenteditable="true"]');
+  if ((event.ctrlKey || event.metaKey) && event.key.toLowerCase() === 's') {
+    event.preventDefault();
+    flush();
+    return;
+  }
+  if (event.target.id === 'tag-input') {
+    if (event.key === 'Enter' || event.key === ',' || event.key === ' ') {
+      event.preventDefault();
+      addTag(event.target.value);
+    } else if (event.key === 'Backspace' && !event.target.value && current()?.tags.length) {
+      current().tags.pop();
+      markDirty();
+      renderDetail();
+      $('#tag-input').focus();
+    }
+    return;
+  }
+  if (event.key === 'Escape' && ['title', 'tag-input', 'raw'].includes(event.target.id)) {
+    exitEdit();
+    return;
+  }
+  if (event.target.id === 'link-input') {
+    if (event.key === 'Enter') {
+      event.preventDefault();
+      const href = event.target.value.trim();
+      const chain = editor.chain().focus().extendMarkRange('link');
+      (href ? chain.setLink({ href }) : chain.unsetLink()).run();
+      state.linkOpen = false;
+      renderContext();
+    } else if (event.key === 'Escape') {
+      state.linkOpen = false;
+      renderContext();
+      editor.commands.focus();
+    }
+    return;
+  }
+  if (event.target.id === 'title' && event.key === 'Enter') {
+    event.preventDefault();
+    if (state.raw) $('#raw').focus();
+    else editor?.commands.focus('start');
+    return;
+  }
+  if (!typing && state.editing && event.key === 'Escape') {
+    exitEdit();
+    return;
+  }
+  if (!typing && !state.editing && current() && !event.ctrlKey && !event.metaKey && !event.altKey && event.key.toLowerCase() === 'e') {
+    event.preventDefault();
+    enterEdit();
+    return;
+  }
+  if (!typing && !event.ctrlKey && !event.metaKey && !event.altKey && event.key.toLowerCase() === 'n') {
+    event.preventDefault();
+    newNote();
+  }
+});
+
+const cancelHold = () => {
+  clearTimeout(holdTimer);
+  document.querySelector('[data-hold].holding')?.classList.remove('holding');
+};
+
+document.addEventListener('pointerdown', (event) => {
+  const button = event.target.closest('[data-hold]');
+  if (!button) return;
+  button.classList.add('holding');
+  if (button.dataset.hold === 'delete-attachment') {
+    const attachmentId = button.dataset.id;
+    holdTimer = setTimeout(() => removeAttachment(attachmentId), 3000);
+    return;
+  }
+  if (button.dataset.hold === 'delete-project') {
+    const projectId = button.dataset.project;
+    holdTimer = setTimeout(() => {
+      const index = PROJECTS.findIndex((p) => p.id === projectId);
+      PROJECTS.splice(index, 1);
+      notes = notes.filter((n) => n.projectId !== projectId);
+      state.confirmProject = null;
+      if (state.project === projectId) state.project = 'all';
+      if (!current()) state.selectedId = filtered()[0]?.id ?? null;
+      renderAll();
+    }, 3000);
+    return;
+  }
+  holdTimer = setTimeout(() => {
+    clearTimeout(saveTimer);
+    state.saving = false;
+    notes = notes.filter((n) => n.id !== state.selectedId);
+    state.selectedId = filtered()[0]?.id ?? null;
+    state.editing = false;
+    renderAll();
+  }, 3000);
+});
+['pointerup', 'pointercancel'].forEach((type) => document.addEventListener(type, cancelHold));
+document.addEventListener('pointerleave', (event) => event.target.matches?.('[data-hold]') && cancelHold(), true);
+
+state.selectedId = filtered()[0].id;
+renderAll();
+</script>
+</body>
+</html>
